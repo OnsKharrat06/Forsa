@@ -1,9 +1,9 @@
 import React from 'react'
-import Background from '../components/Background'
-import Logo from '../components/Logo'
-import Header from '../components/Header'
-import Paragraph from '../components/Paragraph'
-import Button from '../components/Button'
+import Background from '../element/Background'
+import Logo from '../element/Logo'
+import Header from '../element/Header'
+import Button from '../element/Button'
+import Paragraph from '../element/Paragraph'
 
 export default function Dashboard({ navigation }) {
   return (
