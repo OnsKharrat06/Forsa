@@ -11,26 +11,13 @@ import {
   Dashboard,
 } from "./components/login-signup/screens";
 import Home from "./components/home/Home";
-import ScreenHeaderBtn from "./components/header/ScreenHeaderBtn";
-import { COLORS, icons, images } from "./constants";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <Provider theme={theme}>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="Home"
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="Home" component={Home} />
-        </Stack.Navigator>
-      </NavigationContainer>
-
-      {/* <NavigationContainer>
+     <NavigationContainer>
         <Stack.Navigator
           initialRouteName="StartScreen"
           screenOptions={{
@@ -44,7 +31,7 @@ export default function App() {
           <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
           <Stack.Screen name="Home" component={Home} />
         </Stack.Navigator>
-      </NavigationContainer> */}
+      </NavigationContainer>
     </Provider>
   );
 }
