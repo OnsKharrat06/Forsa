@@ -28,7 +28,7 @@ const Welcome = ({ searchTerm, setSearchTerm, handleClick }) => {
         style={{ flex: 1 }}
       >
         <View style={styles.container}>
-          <Text style={styles.userName}>Hello Shubham</Text>
+          <Text style={styles.userName}>Hello, Ons</Text>
           <Text style={styles.welcomeMessage}>Find your perfect job</Text>
         </View>
 
@@ -42,7 +42,9 @@ const Welcome = ({ searchTerm, setSearchTerm, handleClick }) => {
             />
           </View>
 
-          <TouchableOpacity style={styles.searchBtn} onPress={handleClick}>
+          <TouchableOpacity style={styles.searchBtn} 
+          // onPress={handleClick}
+          >
             <Image
               source={icons.search}
               resizeMode="contain"
@@ -57,10 +59,10 @@ const Welcome = ({ searchTerm, setSearchTerm, handleClick }) => {
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.tab(activeJobType, item)}
-                onPress={() => {
-                  setActiveJobType(item);
-                  router.push(`/search/${item}`);
-                }}
+                // onPress={() => {
+                //   setActiveJobType(item);
+                //   router.push(`/search/${item}`);
+                // }}
               >
                 <Text style={styles.tabText(activeJobType, item)}>{item}</Text>
               </TouchableOpacity>
