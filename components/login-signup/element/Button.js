@@ -8,10 +8,12 @@ export default function Button({ mode, style, ...props }) {
     <PaperButton
       style={[
         styles.button,
-        mode === "outlined" && { backgroundColor: theme.colors.surface },
+        mode === "outlined" && { backgroundColor: theme.colors.primaryOutline, borderColor: theme.colors.primary },
         style,
       ]}
-      labelStyle={styles.text}
+      labelStyle={[styles.text,
+        mode === "contained" && { color: theme.colors.secondary},
+      ]}
       mode={mode}
       {...props}
     />
