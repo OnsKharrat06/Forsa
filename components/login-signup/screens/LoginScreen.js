@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TouchableOpacity, StyleSheet, View } from 'react-native'
+import { TouchableOpacity, StyleSheet, View,TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../element/Background'
 import Logo from '../element/Logo'
@@ -31,6 +31,8 @@ export default function LoginScreen({ navigation }) {
   }
 
   return (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={{flex: 1}}>
     <Background>
       <BackButton goBack={navigation.goBack} />
       <Logo />
@@ -73,6 +75,8 @@ export default function LoginScreen({ navigation }) {
         </TouchableOpacity>
       </View>
     </Background>
+    </View>
+    </TouchableWithoutFeedback>
   )
 }
 
