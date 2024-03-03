@@ -11,6 +11,7 @@ import {
   Dashboard,
 } from "./components/login-signup/screens";
 import Home from "./components/home/Home";
+import { BottomTabNavigator } from './components/navigator/tabbar/tabnavication'
 
 const Stack = createStackNavigator();
 
@@ -27,9 +28,9 @@ export default function App() {
           <Stack.Screen name="StartScreen" component={StartScreen} />
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-          <Stack.Screen name="Dashboard" component={Dashboard} />
+          {/* <Stack.Screen name="Dashboard" component={Dashboard} /> */}
           <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
-          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Home" component={BottomTabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
