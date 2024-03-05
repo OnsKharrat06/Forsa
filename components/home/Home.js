@@ -8,7 +8,7 @@ import ScreenHeaderBtn from "../header/ScreenHeaderBtn";
 import { StyleSheet } from "react-native";
 
 
-const Home = () => {
+const Home = ({ navigation }) => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -19,7 +19,7 @@ const Home = () => {
       style={{ flex: 1 }}
     >
       <View style={styles.header}>
-        <ScreenHeaderBtn  iconUrl={icons.menu} dimension="60%" />
+        <ScreenHeaderBtn  iconUrl={icons.menu} dimension="70%" />
         <Text style={styles.title}>Home</Text>
         <ScreenHeaderBtn  iconUrl={images.profile} dimension="100%" />
       </View>
@@ -46,17 +46,17 @@ const Home = () => {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.primary,
     flexDirection:"row",
     padding:10,
-    paddingTop:20,
+    paddingTop:30,
     justifyContent:"space-between",
     alignItems:"center"
   },
   title:{
     fontFamily: FONT.bold,
     fontSize: SIZES.large,
-    color: COLORS.primary,
+    color: "#F1F0EC",
     marginTop: 2,
   }
   

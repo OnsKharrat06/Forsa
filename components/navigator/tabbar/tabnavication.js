@@ -9,6 +9,7 @@ import { Svg, Path } from "react-native-svg";
 import { scale } from "react-native-size-scaling";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { COLORS } from "../../../constants";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -18,13 +19,13 @@ export const BottomTabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
+        tabBarActiveTintColor: COLORS.primary,
         tabBarStyle: {
           backgroundColor: "transparent",
           borderTopWidth: 0,
           position: "absolute",
           elevation: 0,
         },
-
       }}
     >
       <Tab.Screen
@@ -67,7 +68,7 @@ export const BottomTabNavigator = () => {
           unmountOnBlur: false,
           tabBarItemStyle: {
             margin: 0,
-            zIndex: -50,
+            zIndex: -40,
           },
           tabBarIcon: () => (
             <View
@@ -104,7 +105,11 @@ export const BottomTabNavigator = () => {
           },
           tabBarIcon: () => (
             <View>
-              <Ionicons name="notifications" size={30} color={COLORS.tertiary} />
+              <Ionicons
+                name="notifications"
+                size={30}
+                color={COLORS.tertiary}
+              />
             </View>
           ),
         }}
@@ -125,7 +130,6 @@ export const BottomTabNavigator = () => {
           ),
         }}
       />
-
     </Tab.Navigator>
   );
 };
