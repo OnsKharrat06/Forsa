@@ -12,7 +12,7 @@ import {
 } from "./components/login-signup/screens";
 import Home from "./components/home/Home";
 import { BottomTabNavigator } from './components/navigator/tabbar/tabnavication'
-import DrawNavigation from "./components/navigator/drawernav/DrawerNavigator";
+import DrawNavigation from "./components/navigator/drawernav/DrawerNavigator.js";
 
 const Stack = createStackNavigator();
 

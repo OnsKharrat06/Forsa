@@ -10,6 +10,9 @@ import { scale } from "react-native-size-scaling";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { COLORS } from "../../../constants";
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import Profile from "../../Profile/Profile";
+import Save from "../../SavedJob/Save";
+import Form from "../../Form-cv/Form";
 
 const Tab = createBottomTabNavigator();
 
@@ -46,7 +49,7 @@ export const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name="Save"
-        component=""
+        component={Save}
         options={{
           headerShown: false,
           tabBarItemStyle: {
@@ -62,7 +65,7 @@ export const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name="Add"
-        component=""
+        component={Form}
         options={{
           headerShown: false,
           unmountOnBlur: false,
@@ -96,7 +99,7 @@ export const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name="Notification"
-        component=""
+        component={Home}
         options={{
           headerShown: false,
           tabBarItemStyle: {
@@ -116,7 +119,7 @@ export const BottomTabNavigator = () => {
       />
       <Tab.Screen
         name="Profile"
-        component=""
+        component={Profile}
         options={{
           headerShown: false,
           tabBarItemStyle: {

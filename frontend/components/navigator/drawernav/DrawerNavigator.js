@@ -5,7 +5,6 @@ import { Button } from "react-native-paper";
 import { BottomTabNavigator } from "../tabbar/tabnavication";
 import { COLORS } from '../../../constants';
 import Home from '../../home/Home';
-
 const Drawer = createDrawerNavigator();
 
 const CustomDrawerContent = ({ navigation }) => {
