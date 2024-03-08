@@ -13,12 +13,12 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: SIZES.large,
-    fontFamily: FONT.medium,
+    fontFamily: "Al Nile",
     color: COLORS.primary,
   },
   headerBtn: {
     fontSize: SIZES.medium,
-    fontFamily: FONT.medium,
+    fontFamily: "Al Nile",
     color: COLORS.gray,
   },
   cardsContainer: {

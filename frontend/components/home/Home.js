@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View, ScrollView, Text, ImageBackground } from "react-native";
 import { Stack, useRouter } from "expo-router";
-import { COLORS, icons, images, SIZES, FONT } from "../../constants";
+import { COLORS, images, SIZES, FONT } from "../../constants";
 
 import Welcome from "./welcome/Welcome";
 import ScreenHeaderBtn from "../header/ScreenHeaderBtn";
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     alignItems:"center"
   },
   title:{
-    fontFamily: FONT.bold,
+    fontFamily: "AlNile-Bold",
     fontSize: SIZES.large,
     color: "#F1F0EC",
     marginTop: 2,
