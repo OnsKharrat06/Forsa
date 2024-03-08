@@ -12,6 +12,7 @@ import {
 } from "./components/login-signup/screens";
 import Home from "./components/home/Home";
 import { BottomTabNavigator } from './components/navigator/tabbar/tabnavication'
+import DrawNavigation from "./components/navigator/drawernav/DrawerNavigator";
 
 const Stack = createStackNavigator();
 
@@ -20,7 +21,7 @@ export default function App() {
     <Provider theme={theme}>
      <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="StartScreen"
+          initialRouteName="Home"
           screenOptions={{
             headerShown: false,
           }}
@@ -30,7 +31,7 @@ export default function App() {
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
           {/* <Stack.Screen name="Dashboard" component={Dashboard} /> */}
           <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
-          <Stack.Screen name="Home" component={BottomTabNavigator} />
+          <Stack.Screen name="Home" component={DrawNavigation} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

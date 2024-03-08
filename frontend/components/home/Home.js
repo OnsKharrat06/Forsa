@@ -18,12 +18,6 @@ const Home = ({ navigation }) => {
       resizeMode="stretch"
       style={{ flex: 1 }}
     >
-      <View style={styles.header}>
-        <ScreenHeaderBtn  iconUrl={icons.menu} dimension="70%" />
-        <Text style={styles.title}>Home</Text>
-        <ScreenHeaderBtn  iconUrl={images.profile} dimension="100%" />
-      </View>
-
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ flex: 1, padding: SIZES.medium }}>
           <Welcome
