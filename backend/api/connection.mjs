@@ -7,7 +7,6 @@ import { getUserByEmail } from './db.mjs';
 
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
@@ -23,22 +22,18 @@ app.post('/users', async (req, res) => {
   }
 });
 
-app.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
+app.post('/login',cors(), async (req, res) => {
+  const {email,password} = req.body;
   try {
     const user = await getUserByEmail(email);
-
     if (!user) {
       res.status(401).json({ message: 'Invalid credentials' });
       return;
     }
-
-    // Check if the provided password matches the stored password
     if (password === user.password) {
       res.status(200).json({ message: 'Logged in successfully' });
     } else {
-      res.status(401).json({ message: 'Invalid credentials' });
+      res.status(401).json({ message: 'Invalid password' });
     }
   } catch (error) {
     console.error(error);
