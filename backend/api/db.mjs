@@ -5,13 +5,13 @@ const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'test',
+    database: 'fursadashs',
 }).promise()
 
 
-export async function postUser(name, email, password) {
+export async function postUser(fname,lname, email, phone, password) {
   try {
-    const [result] = await pool.query("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", [name, email, password]);
+    const [result] = await pool.query("INSERT INTO users (fname,lname, email, phone, password) VALUES (?, ?, ?, ?,?)", [fname,lname, email, phone, password]);
     console.log("User added successfully:", result);
     return result;
   } catch (error) {

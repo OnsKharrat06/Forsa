@@ -11,10 +11,10 @@ app.use(cors());
 app.use(express.json());
 
 app.post('/users', async (req, res) => {
-  const { name, email, password } = req.body;
+  const {fname,lname, email, phone, password} = req.body;
   try {
     // Call the postProvider function to add a new provider
-    await postUser(name, email, password);
+    await postUser(fname,lname, email, phone, password);
     res.status(201).json({ message: 'user added successfully' });
   } catch (error) {
     console.error(error);
