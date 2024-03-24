@@ -13,23 +13,26 @@ import { passwordValidator } from '../helpers/passwordValidator'
 import { nameValidator } from '../helpers/nameValidator'
 
 export default function RegisterScreen({ navigation }) {
-  const [name, setName] = useState({ value: '', error: '' })
+  const [fname, setFname] = useState({ value: '', error: '' })
+  const [lname, setLname] = useState({ value: '', error: '' })
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
 
   const onSignUpPressed = () => {
-    const nameError = nameValidator(name.value)
+    const fnameError = nameValidator(fname.value)
+    const lnameError = nameValidator(lname.value)
     const emailError = emailValidator(email.value)
     const passwordError = passwordValidator(password.value)
-    if (emailError || passwordError || nameError) {
-      setName({ ...name, error: nameError })
+    if (emailError || passwordError || fnameError || lnameError) {
+      setFname({ ...fname, error: fnameError })
+      setLname({ ...lname, error: lnameError })
       setEmail({ ...email, error: emailError })
       setPassword({ ...password, error: passwordError })
       return
     }
     navigation.reset({
       index: 0,
-      routes: [{ name: 'Dashboard' }],
+      routes: [{ name: 'Home' }],
     })
   }
 
@@ -41,12 +44,20 @@ export default function RegisterScreen({ navigation }) {
       <Logo />
       <Header>Create Account</Header>
       <TextInput
-        label="Name"
+        label="First Name"
         returnKeyType="next"
-        value={name.value}
-        onChangeText={(text) => setName({ value: text, error: '' })}
-        error={!!name.error}
-        errorText={name.error}
+        value={fname.value}
+        onChangeText={(text) => setFname({ value: text, error: '' })}
+        error={!!fname.error}
+        errorText={fname.error}
+      />
+       <TextInput
+        label="Last Name"
+        returnKeyType="next"
+        value={lname.value}
+        onChangeText={(text) => setLname({ value: text, error: '' })}
+        error={!!lname.error}
+        errorText={lname.error}
       />
       <TextInput
         label="Email"
