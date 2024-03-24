@@ -12,7 +12,7 @@ import { emailValidator } from '../helpers/emailValidator';
 import { passwordValidator } from '../helpers/passwordValidator';
 import { nameValidator } from '../helpers/nameValidator';
 import axios from 'axios';
-
+//test
 export default function RegisterScreen({ navigation }) {
   const [fname, setFName] = useState({ value: '', error: '' });
   const [lname, setLName] = useState({ value: '', error: '' });
