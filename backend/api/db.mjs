@@ -43,12 +43,12 @@ export async function getAllCVsWithSkills() {
   }
 }
 
-export async function postCV(cvID, userid, education, experience, skills) {
+export async function postCV(userid, education, experience, skills) {
   try {
       // Insert data into the CV table
-      const [result] = await pool.query("INSERT INTO CV (cvID, userid, education, experience) VALUES (?, ?, ?, ?)", [cvID, userid, education, experience]);
+      const [result] = await pool.query("INSERT INTO CV (userid, education, experience) VALUES (?, ?, ?)", [userid, education, experience]);
       console.log("CV added successfully:", result);
-
+      const cvID = result.insertId;
       // Insert skills into the CV_Skills table
       if (skills) {
           const skillArray = skills.split(',').map(skill => skill.trim());

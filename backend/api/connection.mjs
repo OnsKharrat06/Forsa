@@ -69,16 +69,22 @@ app.get('/cvs', async (req, res) => {
 });
 
 app.post('/cvs', async (req, res) => {
-  const { cvID, userid, education, experience, skills } = req.body;
+  const { userid, education, experience, skills } = req.body;
   try {
+      // Check if userid is provided
+      if (!userid) {
+          return res.status(400).json({ error: 'userid is required' });
+      }
+
       // Call the postCV function to add a new CV
-      await postCV(cvID, userid, education, experience, skills);
+      await postCV(userid, education, experience, skills);
       res.status(201).json({ message: 'CV added successfully' });
   } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 app.put('/cvs/:cvID', async (req, res) => {
   const cvID = req.params.cvID;
   const { education, experience, skills } = req.body;
