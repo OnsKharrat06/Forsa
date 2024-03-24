@@ -9,6 +9,7 @@ const Profile = () => {
             style={{ flex: 1 }}
         >
             <View style={styles.container}>
+            <ImageBackground source={require('../../assets/images/profilebg.png')} style={styles.header} />
                 <Image
                     source={require('../../assets/images/ons.jpg')}
                     style={styles.profileImage}
@@ -17,6 +18,7 @@ const Profile = () => {
                     <Text style={styles.userName}>Ons</Text>
                     <Text style={styles.userBio}>Web Developer</Text>
                     <Text style={styles.userLocation}>Tunisia, Tunis</Text>
+                    <Text style={styles.userBio}>I am a web developer with strong problem solving skills and proven experience in creating and developing a web based application. I'm currently learning to develop a mobile application using React Native.</Text>
                 </View>
             </View>
         </ImageBackground>
@@ -29,11 +31,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    header:{
+        height:200,
+        resizeMode: "cover",
+      },
     profileImage: {
-        width: 150,
-        height: 150,
-        borderRadius: 75,
-        marginBottom: 20,
+        width: 130,
+        height: 130,
+        borderRadius: 63,
+        borderWidth: 4,
+        borderColor: "white",
+        marginBottom:10,
+        alignSelf:'center',
+        position: 'absolute',
+        marginTop:130
     },
     userInfo: {
         alignItems: 'center',
