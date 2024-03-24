@@ -66,26 +66,71 @@ export async function postCV(cvID, userid, education, experience, skills) {
 
 export async function updateCV(cvID, education, experience, skills) {
   try {
-      // Update data in the CV table
-      await pool.query("UPDATE CV SET education = ?, experience = ? WHERE cvID = ?", [education, experience, cvID]);
-      
-      // Delete existing skills for the CV
+    const updateParams = [];
+    let updateQuery = "UPDATE CV SET";
+
+    if (education !== undefined) {
+      updateQuery += " education = ?,";
+      updateParams.push(education);
+    }
+
+    if (experience !== undefined) {
+      updateQuery += " experience = ?,";
+      updateParams.push(experience);
+    }
+
+    // Remove the trailing comma from the query if any fields are updated
+    if (updateParams.length > 0) {
+      updateQuery = updateQuery.slice(0, -1);
+    } else {
+      // If no education or experience fields are provided for update, we proceed to check skills
+      if (skills !== undefined) {
+        await pool.query("DELETE FROM CV_Skills WHERE cvID = ?", [cvID]);
+
+        // Insert updated skills into the CV_Skills table
+        const skillArray = skills.split(',').map(skill => skill.trim());
+        for (const skill of skillArray) {
+          await pool.query("INSERT INTO CV_Skills (cvID, skill) VALUES (?, ?)", [cvID, skill]);
+        }
+
+        console.log("Skills updated successfully");
+        return; // Exit the function after updating skills
+      } else {
+        // If no fields are provided for update, we won't perform the update
+        console.log("No fields to update.");
+        return;
+      }
+    }
+
+    updateQuery += " WHERE cvID = ?";
+    updateParams.push(cvID);
+
+    // Update data in the CV table
+    await pool.query(updateQuery, updateParams);
+
+    // If skills are provided along with education and experience, update them too
+    if (skills !== undefined) {
       await pool.query("DELETE FROM CV_Skills WHERE cvID = ?", [cvID]);
 
       // Insert updated skills into the CV_Skills table
-      if (skills) {
-          const skillArray = skills.split(',').map(skill => skill.trim());
-          for (const skill of skillArray) {
-              await pool.query("INSERT INTO CV_Skills (cvID, skill) VALUES (?, ?)", [cvID, skill]);
-          }
+      const skillArray = skills.split(',').map(skill => skill.trim());
+      for (const skill of skillArray) {
+        await pool.query("INSERT INTO CV_Skills (cvID, skill) VALUES (?, ?)", [cvID, skill]);
       }
 
-      console.log("CV updated successfully");
+      console.log("Skills updated successfully");
+    }
+
+    console.log("CV updated successfully");
   } catch (error) {
-      console.error("Error updating CV in the database:", error);
-      throw error;
+    console.error("Error updating CV in the database:", error);
+    throw error;
   }
 }
+
+
+
+
 // Function to get CVs by userid
 export async function getCVsByUserId(userid) {
   try {
