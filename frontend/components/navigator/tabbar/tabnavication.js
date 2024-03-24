@@ -12,7 +12,7 @@ import { COLORS } from "../../../constants";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import Profile from "../../Profile/Profile";
 import Save from "../../SavedJob/Save";
-import Form from "../../Form-cv/Form";
+import Form from "../../Form-cv/CreateCV";
 
 const Tab = createBottomTabNavigator();
 
@@ -21,6 +21,7 @@ export const BottomTabNavigator = () => {
   const returnpathDown = getPathDown(maxWidth, 60, 50);
   return (
     <Tab.Navigator
+      safeAreaInsets={{ bottom: 0, top: 0 }}
       screenOptions={{
         tabBarActiveTintColor: COLORS.primary,
         tabBarStyle: {
@@ -48,7 +49,7 @@ export const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Save"
+        name="Matches"
         component={Save}
         options={{
           headerShown: false,
@@ -58,7 +59,7 @@ export const BottomTabNavigator = () => {
           },
           tabBarIcon: () => (
             <View>
-              <Ionicons name="heart" size={30} color={COLORS.tertiary} />
+              <Ionicons name="checkmark-done-circle" size={30} color={COLORS.tertiary} />
             </View>
           ),
         }}
@@ -98,7 +99,7 @@ export const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Notification"
+        name="Save"
         component={Home}
         options={{
           headerShown: false,
@@ -109,7 +110,7 @@ export const BottomTabNavigator = () => {
           tabBarIcon: () => (
             <View>
               <Ionicons
-                name="notifications"
+                name="heart"
                 size={30}
                 color={COLORS.tertiary}
               />
