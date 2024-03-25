@@ -13,6 +13,8 @@ import {
 import Home from "./components/home/Home";
 import { BottomTabNavigator } from './components/navigator/tabbar/tabnavication'
 import DrawNavigation from "./components/navigator/drawernav/DrawerNavigator.js";
+import Form from "./components/Form-cv/CreateCV.js";
+import CVScreen from "./components/Form-cv/CVScreen.js";
 
 const Stack = createStackNavigator();
 
@@ -32,6 +34,8 @@ export default function App() {
           {/* <Stack.Screen name="Dashboard" component={Dashboard} /> */}
           <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
           <Stack.Screen name="Home" component={DrawNavigation} />
+          <Stack.Screen name="CreateCV" component={Form} />
+          <Stack.Screen name="CVScreen" component={CVScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

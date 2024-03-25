@@ -10,24 +10,29 @@ import BackButton from '../element/BackButton'
 import { theme } from '../core/theme'
 import { emailValidator } from '../helpers/emailValidator'
 import { passwordValidator } from '../helpers/passwordValidator'
+import axios from 'axios'
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
+  const [error,setError]=useState();
+
+  const url="http://192.168.1.21:8000/login"
 
   const onLoginPressed = () => {
-    const emailError = emailValidator(email.value)
-    const passwordError = passwordValidator(password.value)
-    if (emailError || passwordError) {
-      setEmail({ ...email, error: emailError })
-      setPassword({ ...password, error: passwordError })
-      return
-    }
-    navigation.reset({
-      index: 0,
-      // We are here
-      routes: [{ name: 'Home' }],
-    })
+    const emailValue = email.value; 
+    const passwordValue = password.value; 
+
+    const resultObj = {
+      email: emailValue,
+      password: passwordValue,
+    };
+    axios.post(url, resultObj).then(response => {
+      navigation.navigate('Home');
+      console.log(response.data);
+    }).catch((error) => {
+        console.error("Login failed", error);
+    });
   }
 
   return (
@@ -36,7 +41,7 @@ export default function LoginScreen({ navigation }) {
     <Background>
       <BackButton goBack={navigation.goBack} />
       <Logo />
-      <Header>Welcome back.</Header>
+      <Header>Welcome back</Header>
       <TextInput
         label="Email"
         returnKeyType="next"
