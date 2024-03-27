@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native";
-
 import { COLORS, FONT, SIZES } from "../../../constants";
 
 const styles = StyleSheet.create({
@@ -12,7 +11,7 @@ const styles = StyleSheet.create({
     color: COLORS.secondary,
   },
   welcomeMessage: {
-    fontFamily:"AlNile-Bold",
+    fontFamily: "AlNile-Bold",
     fontSize: SIZES.xLarge,
     color: COLORS.primary,
     marginTop: 2,
@@ -39,6 +38,7 @@ const styles = StyleSheet.create({
     height: "100%",
     paddingHorizontal: SIZES.medium,
     borderColor: COLORS.primary,
+    color: COLORS.secondary,
   },
   searchBtn: {
     width: 50,
@@ -47,11 +47,6 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.medium,
     justifyContent: "center",
     alignItems: "center",
-  },
-  searchBtnImage: {
-    width: "50%",
-    height: "50%",
-    tintColor: COLORS.white,
   },
   tabsContainer: {
     width: "100%",
@@ -68,6 +63,26 @@ const styles = StyleSheet.create({
     fontFamily: "Al Nile",
     color: activeJobType === item ? COLORS.secondary : COLORS.gray2,
   }),
+  modalContent: {
+    flex: 1,
+    backgroundColor: COLORS.lightWhite,
+    justifyContent: 'center',
+    padding: 20,
+    alignItems: 'center',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 35,
+    left: 12,
+  },
+  searchPopUpContainer: {
+    flexDirection: "row",
+    position: "absolute",
+    top: 80, 
+    left: 10,
+    right: 10,
+    height: 50,
+  },
 });
 
 export default styles;

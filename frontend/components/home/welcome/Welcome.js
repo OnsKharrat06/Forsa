@@ -1,4 +1,4 @@
-import { useState, } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,19 +6,27 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
-  ImageBackground
+  ImageBackground,
+  Modal,
 } from "react-native";
-
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 
 import styles from "./welcome.style";
 import { COLORS, icons, SIZES } from "../../../constants";
 
-const jobTypes = ["Full-time", "Part-time", "Contractor"];
-
-const Welcome = ({ searchTerm, setSearchTerm, handleClick }) => {
+const Welcome = () => {
   const router = useRouter();
-  const [activeJobType, setActiveJobType] = useState("Full-time");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+  };
 
   return (
     <View>
@@ -37,33 +45,26 @@ const Welcome = ({ searchTerm, setSearchTerm, handleClick }) => {
             <TextInput
               style={styles.searchInput}
               selectionColor={COLORS.primary}
-              value={searchTerm}
-              onChangeText={(text) => setSearchTerm(text)}
+              onFocus={toggleModal} // Show modal on focus
               placeholder="What are you looking for?"
             />
           </View>
 
-          <TouchableOpacity style={styles.searchBtn} 
-          // onPress={handleClick}
-          >
-            <Image
-              source={icons.search}
-              resizeMode="contain"
-              style={styles.searchBtnImage}
-            />
+          <TouchableOpacity style={styles.searchBtn}>
+            <Ionicons name="search-outline" size={24} color="white" />
           </TouchableOpacity>
         </View>
 
         <View style={styles.tabsContainer}>
-          <FlatList
+          {/* <FlatList
             data={jobTypes}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.tab(activeJobType, item)}
-                // onPress={() => {
-                //   setActiveJobType(item);
-                //   router.push(`/search/${item}`);
-                // }}
+                onPress={() => {
+                  setActiveJobType(item);
+                  router.push(`/search/${item}`);
+                }}
               >
                 <Text style={styles.tabText(activeJobType, item)}>{item}</Text>
               </TouchableOpacity>
@@ -71,9 +72,39 @@ const Welcome = ({ searchTerm, setSearchTerm, handleClick }) => {
             keyExtractor={(item) => item}
             contentContainerStyle={{ columnGap: SIZES.small }}
             horizontal
-          />
+          /> */}
         </View>
       </ImageBackground>
+
+      <Modal
+        visible={showModal}
+        animationInTiming={0}
+        // animationType="fade"
+      >
+          <View style={styles.modalContent}>
+            <View style={styles.closeButton}>
+              <TouchableOpacity onPress={handleModalClose}>
+                <Ionicons name="close" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.searchPopUpContainer}>
+              <View style={styles.searchWrapper}>
+                <TextInput
+                  style={styles.searchInput}
+                  selectionColor={COLORS.primary}
+                  value={searchTerm}
+                  onChangeText={(text) => setSearchTerm(text)}
+                  placeholder="What are you looking for?"
+                  placeholderTextColor="gray"
+                />
+              </View>
+
+              <TouchableOpacity style={styles.searchBtn}>
+                <Ionicons name="search-outline" size={24} color="white" />
+              </TouchableOpacity>
+            </View>
+          </View>
+      </Modal>
     </View>
   );
 };
