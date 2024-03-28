@@ -11,6 +11,8 @@ import { getCVsByUserId } from './db.mjs';
 // Allow requests from the Expo tunnel URL
 //test
 import { getUserByID, updateUser, getMatchingPerUserID, getFavoritesPerUserID } from './db.mjs';
+//New version :
+import { getAllIndustries, postIndustryToUser, updateIndustry, deleteUserIndustry} from './db.mjs';
 
 
 const app = express();
@@ -178,6 +180,96 @@ app.get('/favorites/:userid', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
+//New version
+
+//user_industries
+
+app.get('/user_industries/:userid',async (req, res) => {
+  const { userid } = req.params;
+
+  try {
+    const industries = await getAllIndustries(userid);
+
+      res.status(200).json({
+        message: 'all indsutries retrieved',
+        industries: industries
+      });
+  } catch (error) {
+    console.error("Error on retrieving user industries", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+
+})
+
+app.post('/user_industries/:userid', async (req, res) => {
+  const { userid } = req.params;
+  const { industry_name } = req.body;
+
+  if (!industry_name) {
+    return res.status(400).json({ error: 'Missing industry_name' });
+  }
+
+  try {
+    await postIndustryToUser(userid, industry_name);
+
+    res.status(201).json({
+      message: 'Industry added successfully to user',
+      userid: userid,
+      industry_name: industry_name
+    });
+  } catch (error) {
+    console.error("Error on adding industry to user", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.put('/user_industries/:user_industryid', async (req, res) => {
+  const { user_industryid } = req.params; 
+  const { industry_name: new_industry_name } = req.body; 
+
+  if (!new_industry_name) {
+    return res.status(400).json({ error: 'Missing new industry name' });
+  }
+
+  try {
+    await updateIndustry(user_industryid, new_industry_name);
+
+    res.status(200).json({
+      message: 'Industry name updated successfully',
+      user_industryid,
+      new_industry_name
+    });
+  } catch (error) {
+    console.error("Error on updating industry name", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.delete('/user_industries/:user_industryid', async (req, res) => {
+  const { user_industryid } = req.params; 
+
+  try {
+    await deleteUserIndustry(user_industryid);
+
+    res.status(200).json({
+      message: 'Industry removed successfully',
+      user_industryid
+    });
+  } catch (error) {
+    console.error("Error on deleting industry", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+//
+
+
+
+
+
+
 
 
 // Start the server
