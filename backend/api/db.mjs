@@ -5,7 +5,7 @@ const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'fursadashs',
+    database: 'fursadashs1',
 }).promise()
 
 
@@ -217,3 +217,59 @@ export async function getFavoritesPerUserID(userid) {
     throw error;
   }
 }
+
+
+
+
+// New Version :
+
+//User industries
+
+//get user_industries
+export async function getAllIndustries(userid) {
+  try {
+      const [rows] = await pool.query('select * from user_industries where userid = ?', [userid]);
+      return rows;
+  } catch (error) {
+      console.error("Error getting user industries", error);
+      throw error;
+  }
+}
+
+//post user_industries
+
+export async function postIndustryToUser(userid, user_industryid) {
+  try {
+    const result = await pool.query('INSERT INTO user_industries (userid, industry_name) VALUES (?, ?)', [userid, user_industryid]);
+    return result;
+  } catch (error) {
+    console.error("Error adding industry to user", error);
+    throw error;
+  }
+}
+
+//update user_industries
+
+export async function updateIndustry(user_industryid, new_industry_name) {
+  try {
+    const result = await pool.query('UPDATE user_industries SET industry_name = ? WHERE user_industry_id = ?', [new_industry_name, user_industryid]);
+    return result;
+  } catch (error) {
+    console.error("Error updating industry name", error);
+    throw error;
+  }
+}
+
+export async function deleteUserIndustry(user_industryid) {
+  try {
+    const result = await pool.query('DELETE FROM user_industries WHERE user_industry_id = ?', [user_industryid]);
+    return result;
+  } catch (error) {
+    console.error("Error deleting user industry", error);
+    throw error;
+  }
+}
+
+
+
+
