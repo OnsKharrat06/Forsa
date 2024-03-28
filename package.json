@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "react-native-dropdown-picker": "^5.4.6",
+    "react-native-element-dropdown": "^2.10.4",
     "react-native-gesture-handler": "^2.16.0"
   }
 }
