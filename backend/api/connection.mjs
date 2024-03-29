@@ -13,8 +13,7 @@ import { getCVsByUserId } from './db.mjs';
 import { getUserByID, updateUser, getMatchingPerUserID, getFavoritesPerUserID } from './db.mjs';
 //New version :
 import { getAllIndustries, postIndustryToUser, updateIndustry, deleteUserIndustry} from './db.mjs';
-
-
+import { getAllSkills, postSkillToUser, updateSkill, deleteUserSkill } from './db.mjs';
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -263,8 +262,82 @@ app.delete('/user_industries/:user_industryid', async (req, res) => {
   }
 });
 
-//
+//user_skills
 
+app.get('/user_skills/:userid',async (req, res) => {
+  const { userid } = req.params;
+
+  try {
+    const skills = await getAllSkills(userid);
+
+      res.status(200).json({
+        message: 'all skills retrieved',
+        skills: skills
+      });
+  } catch (error) {
+    console.error("Error on retrieving user skills", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+
+})
+
+app.post('/user_skills/:userid', async (req, res) => {
+  const { userid } = req.params;
+  const { skill } = req.body;
+
+  if (!skill) {
+    return res.status(400).json({ error: 'Missing skill' });
+  }
+
+  try {
+    await postSkillToUser(userid, skill);
+
+    res.status(201).json({
+      message: 'Skill added successfully to user',
+      userid: userid,
+      skill: skill
+    });
+  } catch (error) {
+    console.error("Error on adding skill to user", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.put('/user_skills/:user_skill_id', async (req, res) => {
+  const { user_skill_id } = req.params; 
+  const fieldsToUpdate = req.body; 
+
+  try {
+    await updateSkill(user_skill_id, fieldsToUpdate);
+
+    res.status(200).json({
+      message: 'User skill updated successfully',
+      user_skill_id,
+      fieldsToUpdate
+    });
+  } catch (error) {
+    console.error("Error on updating user skill", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+app.delete('/user_skills/:user_skill_id', async (req, res) => {
+  const { user_skill_id } = req.params; 
+
+  try {
+    await deleteUserSkill(user_skill_id);
+
+    res.status(200).json({
+      message: 'Skill removed successfully',
+      user_skill_id
+    });
+  } catch (error) {
+    console.error("Error on deleting skill", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+ //
 
 
 
