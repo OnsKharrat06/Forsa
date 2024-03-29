@@ -4,35 +4,44 @@ import mysql from 'mysql2';
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'MindYourBusiness',
     database: 'fursadashs1',
 }).promise()
 
 
-export async function postUser(fname,lname, email, phone, password) {
+export async function postUser(fname, lname, age, phone, email, password, city, industries) {
   try {
-    const [result] = await pool.query("INSERT INTO users (fname,lname, email, phone, password) VALUES (?, ?, ?, ?,?)", [fname,lname, email, phone, password]);
+    const [result] = await pool.query("INSERT INTO users (fname, lname, age, phone, email, password, city) VALUES (?, ?, ?, ?, ?, ?, ?)", [fname, lname, age, phone, email, password, city]);
     console.log("User added successfully:", result);
+
+    // Add industries for the user
+    if (industries && industries.length > 0) {
+      for (const industry of industries) {
+        await postIndustryToUser(result.insertId, industry);
+      }
+    }
+
     return result;
   } catch (error) {
     console.error("Error adding user to the database:", error);
-    throw error; // Rethrow the error to be caught in the calling function
+    throw error;
   }
 }
+
 export async function getUserByEmail(email) {
   const [result] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
   return result[0]; // Assuming there's only one user with a given email
 }
 
-export async function getAllJobListings() {
-  try {
-      const [rows] = await pool.query('SELECT * FROM joblisting');
-      return rows;
-  } catch (error) {
-      console.error("Error fetching job listings:", error);
-      throw error;
-  }
-}
+// export async function getAllJobListings() {
+//   try {
+//       const [rows] = await pool.query('SELECT * FROM joblisting');
+//       return rows;
+//   } catch (error) {
+//       console.error("Error fetching job listings:", error);
+//       throw error;
+//   }
+// }
 export async function getAllCVsWithSkills() {
   try {
       const [rows] = await pool.query('SELECT CV.*, GROUP_CONCAT(CV_Skills.skill) AS skills FROM CV LEFT JOIN CV_Skills ON CV.cvID = CV_Skills.cvID GROUP BY CV.cvID');
@@ -238,15 +247,16 @@ export async function getAllIndustries(userid) {
 
 //post user_industries
 
-export async function postIndustryToUser(userid, user_industryid) {
+export async function postIndustryToUser(userid, industry_name) {
   try {
-    const result = await pool.query('INSERT INTO user_industries (userid, industry_name) VALUES (?, ?)', [userid, user_industryid]);
+    const result = await pool.query('INSERT INTO user_industries (userid, industry_name) VALUES (?, ?)', [userid, industry_name]);
     return result;
   } catch (error) {
     console.error("Error adding industry to user", error);
     throw error;
   }
 }
+
 
 //update user_industries
 
@@ -270,6 +280,128 @@ export async function deleteUserIndustry(user_industryid) {
   }
 }
 
+//get work_experience
+export async function getAllWorkExperience(userid) {
+  try {
+    const [rows] = await pool.query('SELECT * FROM work_experience WHERE userid = ?', [userid]);
+    return rows;
+  } catch (error) {
+    console.error("Error getting user's work experience", error);
+    throw error;
+  }
+}
+//post work_experience
+export async function postWorkExperience(userid, job_title, companyname, currently_working, location, start_date, end_date, short_description) {
+  try {
+    const result = await pool.query('INSERT INTO work_experience (userid, job_title, companyname, currently_working, location, start_date, end_date, short_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [userid, job_title, companyname, currently_working, location, start_date, end_date, short_description]);
+    return result;
+  } catch (error) {
+    console.error("Error adding work experience to user", error);
+    throw error;
+  }
+}
+//update work_experience
+export async function updateWorkExperience(experience_id, job_title, companyname, currently_working, location, start_date, end_date, short_description) {
+  try {
+    const result = await pool.query('UPDATE work_experience SET job_title = ?, companyname = ?, currently_working = ?, location = ?, start_date = ?, end_date = ?, short_description = ? WHERE experience_id = ?', [job_title, companyname, currently_working, location, start_date, end_date, short_description, experience_id]);
+    return result;
+  } catch (error) {
+    console.error("Error updating work experience", error);
+    throw error;
+  }
+}
+//delete work_experience
+export async function deleteWorkExperience(experience_id) {
+  try {
+    const result = await pool.query('DELETE FROM work_experience WHERE experience_id = ?', [experience_id]);
+    return result;
+  } catch (error) {
+    console.error("Error deleting work experience", error);
+    throw error;
+  }
+}
+
+//get user language
+
+export async function getAllUserLanguages(userid) {
+  try {
+    const [rows] = await pool.query('SELECT * FROM user_languages WHERE userid = ?', [userid]);
+    return rows;
+  } catch (error) {
+    console.error("Error retrieving user languages", error);
+    throw error;
+  }
+}
+
+//post language
+export async function postUserLanguage(userid, language, proficiency) {
+  try {
+    const result = await pool.query('INSERT INTO user_languages (userid, language, proficiency) VALUES (?, ?, ?)', [userid, language, proficiency]);
+    return result;
+  } catch (error) {
+    console.error("Error adding user language", error);
+    throw error;
+  }
+}
+
+//put language
+export async function updateUserLanguage(user_language_id, language, proficiency) {
+  try {
+    const result = await pool.query('UPDATE user_languages SET language = ?, proficiency = ? WHERE user_language_id = ?', [language, proficiency, user_language_id]);
+    return result;
+  } catch (error) {
+    console.error("Error updating user language", error);
+    throw error;
+  }
+}
+// delete language
+export async function deleteUserLanguage(user_language_id) {
+  try {
+    const result = await pool.query('DELETE FROM user_languages WHERE user_language_id = ?', [user_language_id]);
+    return result;
+  } catch (error) {
+    console.error("Error deleting user language", error);
+    throw error;
+  }
+}
+
+// get all joblistings
+export async function getAllJobListings() {
+  try {
+    const [rows] = await pool.query('SELECT * FROM joblisting');
+    return rows;
+  } catch (error) {
+    console.error("Error fetching job listings:", error);
+    throw error;
+  }
+}
 
 
+//get joblistings by jobid
+export async function getJobListingById(jobid) {
+  try {
+    const [rows] = await pool.query('SELECT * FROM joblisting WHERE jobid = ?', [jobid]);
+    return rows;
+  } catch (error) {
+    console.error("Error fetching job listing by jobid:", error);
+    throw error;
+  }
+}
+
+//get jobskills of a specefic job
+export async function getJobSkillsByJobId(jobId) {
+  try {
+    const [rows] = await pool.query(
+      `SELECT js.skill, js.skill_type 
+       FROM job_skills js 
+       JOIN joblisting jl ON js.jobid = jl.jobid 
+       WHERE jl.jobid = ?`,
+      [jobId]
+    );
+    return rows;
+  } catch (error) {
+    console.error("Error fetching job skills by job ID:", error);
+    throw error;
+  }
+}
 
