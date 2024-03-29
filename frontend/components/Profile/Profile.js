@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, ImageBackground, Image } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, ScrollView, Pressable, Platform, TouchableOpacity, TextInput, ImageBackground, Image } from 'react-native';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal";
 import styles from "./ProfileStyle";
 import { hard, soft } from "./Skill";
 import { MultipleSelectList } from 'react-native-dropdown-select-list';
+import DateTimePicker from "@react-native-community/datetimepicker";
+import moment from "moment";
 
 const ProfileScreen = () => {
     const [editMode, setEditMode] = useState(false);
@@ -18,8 +20,8 @@ const ProfileScreen = () => {
     const [schoolName, setSchoolName] = useState('');
     const [degree, setDegree] = useState('');
     const [fieldOfStudies, setFieldOfStudies] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
     const [grade, setGrade] = useState('');
     const [selectedEducationIndex, setSelectedEducationIndex] = useState(null);
 
@@ -48,6 +50,50 @@ const ProfileScreen = () => {
     const [languageName, setLanguageName] = useState('');
     const [selectedLanguageIndex, setSelectedLanguageIndex] = useState(null);
     const [showLanguageModal, setShowLanguageModal] = useState(false);
+
+
+    const [showPicker, setShowPicker] = useState(false);
+    const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+
+    const toggleDatepicker = () => {
+        setShowPicker(!showPicker);
+    };
+
+    const toggleEndDatepicker = () => {
+        setShowEndDatePicker(!showEndDatePicker);
+    };
+
+
+    const confirmIOSDate = (selectedDate) => {
+        setStartDate(selectedDate);
+        toggleDatepicker();
+    };
+
+    const confirmEndDate = (selectedDate) => {
+        setEndDate(selectedDate);
+        toggleEndDatepicker();
+    };
+
+    const onChange = ({ type }, selectedDate) => {
+        if (type === "set") {
+            const currentDate = selectedDate || startDate;
+            setShowPicker(Platform.OS === "ios");
+            setStartDate(currentDate);
+        } else {
+            setShowPicker(false);
+        }
+    };
+
+    const onChangeEndDate = (event, selectedDate) => {
+        if (event.type === "set") {
+            const currentDate = selectedDate || endDate;
+            setShowEndDatePicker(Platform.OS === "ios");
+            setEndDate(currentDate);
+        } else {
+            setShowEndDatePicker(false);
+        }
+    };
+
 
     useEffect(() => {
         // Fetch user data from your backend or API
@@ -92,8 +138,8 @@ const ProfileScreen = () => {
             schoolName,
             degree,
             fieldOfStudies,
-            startDate,
-            endDate,
+            startDate: startDate || null,
+            endDate: endDate || null,
             grade,
         };
         setEducation([...education, newEducation]);
@@ -102,10 +148,11 @@ const ProfileScreen = () => {
         setSchoolName('');
         setDegree('');
         setFieldOfStudies('');
-        setStartDate('');
-        setEndDate('');
+        setStartDate(new Date());
+        setEndDate(new Date());
         setGrade('');
     };
+
 
     const handleDeleteEducation = (index) => {
         const updatedEducation = [...education];
@@ -122,8 +169,8 @@ const ProfileScreen = () => {
         const newWorkExperience = {
             companyName,
             location,
-            startDate,
-            endDate: currentlyWorking ? 'Currently Working' : endDate,
+            startDate: startDate || null,
+            endDate: currentlyWorking ? 'Currently Working' : endDate || null,
             description,
         };
         setWorkExperience([...workExperience, newWorkExperience]);
@@ -131,8 +178,8 @@ const ProfileScreen = () => {
         // Reset form fields
         setCompanyName('');
         setLocation('');
-        setStartDate('');
-        setEndDate('');
+        setStartDate(new Date());
+        setEndDate(new Date());
         setCurrentlyWorking(false);
         setDescription('');
     };
@@ -351,8 +398,8 @@ const ProfileScreen = () => {
                                         <Text>School: {item.schoolName}</Text>
                                         <Text>Degree: {item.degree}</Text>
                                         <Text>Field of Studies: {item.fieldOfStudies}</Text>
-                                        <Text>Start Date: {item.startDate}</Text>
-                                        <Text>End Date: {item.endDate}</Text>
+                                        <Text>Start Date: {moment(item.startDate).format("MM/DD/YYYY")}</Text>
+                                        <Text>End Date: {moment(item.endDate).format("MM/DD/YYYY")}</Text>
                                         <Text>Grade: {item.grade}</Text>
                                     </View>
                                     <TouchableOpacity onPress={() => handleDeleteEducation(index)}>
@@ -391,20 +438,84 @@ const ProfileScreen = () => {
                                 style={styles.input}
                                 placeholderTextColor="gray"
                             />
-                            <TextInput
-                                value={startDate}
-                                onChangeText={setStartDate}
-                                placeholder="Start Date"
-                                style={styles.input}
-                                placeholderTextColor="gray"
-                            />
-                            <TextInput
-                                value={endDate}
-                                onChangeText={setEndDate}
-                                placeholder="End Date (or currently working there)"
-                                style={styles.input}
-                                placeholderTextColor="gray"
-                            />
+
+                            {showPicker && (
+                                <DateTimePicker
+                                    mode="date"
+                                    display="spinner"
+                                    value={startDate}
+                                    onChange={onChange}
+                                    // style={styles.datePicker}
+                                    textColor='gray'
+                                />
+                            )}
+                            {showPicker && Platform.OS === "ios" && (
+                                <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                                    <TouchableOpacity
+                                        style={[styles.button, styles.pickerButton, { backgroundColor: "gray" }]}
+                                        onPress={toggleDatepicker}
+                                    >
+                                        <Text>Cancel</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={[styles.button, styles.pickerButton, { backgroundColor: "gray" }]}
+                                        onPress={() => confirmIOSDate(startDate)}
+                                    >
+                                        <Text>Confirm</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                            {!showPicker && (
+                                <Pressable onPress={toggleDatepicker}>
+                                    <TextInput
+                                        value={moment(startDate).format("MM/DD/YYYY")}
+                                        onChangeText={setStartDate}
+                                        placeholder="Start Date"
+                                        style={styles.input}
+                                        placeholderTextColor="gray"
+                                        editable={false}
+                                        onPressIn={toggleDatepicker}
+                                    />
+                                </Pressable>
+                            )}
+
+                            {showEndDatePicker && (
+                                <DateTimePicker
+                                    mode="date"
+                                    display="spinner"
+                                    value={endDate}
+                                    onChange={onChangeEndDate}
+                                    textColor='gray'
+                                />
+                            )}
+                            {showEndDatePicker && Platform.OS === "ios" && (
+                                <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                                    <TouchableOpacity
+                                        style={[styles.button, styles.pickerButton, { backgroundColor: "gray" }]}
+                                        onPress={toggleEndDatepicker}
+                                    >
+                                        <Text>Cancel</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={[styles.button, styles.pickerButton, { backgroundColor: "gray" }]}
+                                        onPress={() => confirmEndDate(endDate)}
+                                    >
+                                        <Text>Confirm</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                            {!showEndDatePicker && (
+                                <Pressable onPress={toggleEndDatepicker}>
+                                    <TextInput
+                                        value={moment(endDate).format("MM/DD/YYYY")}
+                                        placeholder="End Date"
+                                        style={styles.input}
+                                        placeholderTextColor="gray"
+                                        editable={false}
+                                        onPressIn={toggleEndDatepicker}
+                                    />
+                                </Pressable>
+                            )}
                             <TextInput
                                 value={grade}
                                 onChangeText={setGrade}
@@ -435,8 +546,8 @@ const ProfileScreen = () => {
                                     <View>
                                         <Text>Company Name: {item.companyName}</Text>
                                         <Text>Location: {item.location}</Text>
-                                        <Text>Start Date: {item.startDate}</Text>
-                                        <Text>End Date: {item.endDate}</Text>
+                                        <Text>Start Date: {moment(item.startDate).format("MM/DD/YYYY")}</Text>
+                                        <Text>End Date: {moment(item.endDate).format("MM/DD/YYYY")}</Text>
                                         <Text>Description: {item.description}</Text>
                                     </View>
 
@@ -471,20 +582,83 @@ const ProfileScreen = () => {
                                 style={styles.input}
                                 placeholderTextColor="gray"
                             />
-                            <TextInput
-                                value={startDate}
-                                onChangeText={setStartDate}
-                                placeholder="Start Date"
-                                style={styles.input}
-                                placeholderTextColor="gray"
-                            />
-                            <TextInput
-                                value={endDate}
-                                onChangeText={setEndDate}
-                                placeholder="End Date (or currently working there)"
-                                style={styles.input}
-                                placeholderTextColor="gray"
-                            />
+                                                        {showPicker && (
+                                <DateTimePicker
+                                    mode="date"
+                                    display="spinner"
+                                    value={startDate}
+                                    onChange={onChange}
+                                    // style={styles.datePicker}
+                                    textColor='gray'
+                                />
+                            )}
+                            {showPicker && Platform.OS === "ios" && (
+                                <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                                    <TouchableOpacity
+                                        style={[styles.button, styles.pickerButton, { backgroundColor: "gray" }]}
+                                        onPress={toggleDatepicker}
+                                    >
+                                        <Text>Cancel</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={[styles.button, styles.pickerButton, { backgroundColor: "gray" }]}
+                                        onPress={() => confirmIOSDate(startDate)}
+                                    >
+                                        <Text>Confirm</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                            {!showPicker && (
+                                <Pressable onPress={toggleDatepicker}>
+                                    <TextInput
+                                        value={moment(startDate).format("MM/DD/YYYY")}
+                                        onChangeText={setStartDate}
+                                        placeholder="Start Date"
+                                        style={styles.input}
+                                        placeholderTextColor="gray"
+                                        editable={false}
+                                        onPressIn={toggleDatepicker}
+                                    />
+                                </Pressable>
+                            )}
+
+                            {showEndDatePicker && (
+                                <DateTimePicker
+                                    mode="date"
+                                    display="spinner"
+                                    value={endDate}
+                                    onChange={onChangeEndDate}
+                                    textColor='gray'
+                                />
+                            )}
+                            {showEndDatePicker && Platform.OS === "ios" && (
+                                <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                                    <TouchableOpacity
+                                        style={[styles.button, styles.pickerButton, { backgroundColor: "gray" }]}
+                                        onPress={toggleEndDatepicker}
+                                    >
+                                        <Text>Cancel</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={[styles.button, styles.pickerButton, { backgroundColor: "gray" }]}
+                                        onPress={() => confirmEndDate(endDate)}
+                                    >
+                                        <Text>Confirm</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                            {!showEndDatePicker && (
+                                <Pressable onPress={toggleEndDatepicker}>
+                                    <TextInput
+                                        value={moment(endDate).format("MM/DD/YYYY")}
+                                        placeholder="End Date"
+                                        style={styles.input}
+                                        placeholderTextColor="gray"
+                                        editable={false}
+                                        onPressIn={toggleEndDatepicker}
+                                    />
+                                </Pressable>
+                            )}
                             <TextInput
                                 value={description}
                                 onChangeText={setDescription}
@@ -642,8 +816,8 @@ const ProfileScreen = () => {
                         </View>
                     </Modal>
                 </View>
-            </ScrollView>
-        </ImageBackground>
+            </ScrollView >
+        </ImageBackground >
     );
 };
 

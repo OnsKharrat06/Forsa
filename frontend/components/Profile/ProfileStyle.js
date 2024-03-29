@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { COLORS} from "../../constants";
+import { COLORS } from "../../constants";
 
 const styles = StyleSheet.create({
     container: {
@@ -137,7 +137,23 @@ const styles = StyleSheet.create({
         padding: 5,
         borderWidth: 2,
         borderColor: COLORS.tertiary,
-    }
+    },
+    datePicker: {
+        height: 120,
+        marginTop: -10,
+    },
+    button: {
+        height: 50,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 50,
+        marginTop: 10,
+        marginBottom: 15,
+        backgroundColor: "#075985",
+    },
+    pickerButton: {
+        paddingHorizontal: 20,
+    },
 
 });
 
