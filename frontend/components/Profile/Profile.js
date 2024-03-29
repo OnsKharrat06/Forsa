@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, ImageBackground, Image } from 'react-native';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal";
-import { COLORS } from '../../constants';
+import styles from "./ProfileStyle";
+import { hard, soft } from "./Skill";
+import { MultipleSelectList } from 'react-native-dropdown-select-list';
 
 const ProfileScreen = () => {
     const [editMode, setEditMode] = useState(false);
@@ -35,11 +37,12 @@ const ProfileScreen = () => {
     const [description, setDescription] = useState('');
     const [showWorkExperienceModal, setShowWorkExperienceModal] = useState(false);
 
-    const [technicalSkills, setTechnicalSkills] = useState([]);
-    const [nonTechnicalSkills, setNonTechnicalSkills] = useState([]);
-    const [skillName, setSkillName] = useState('');
-    const [selectedSkillIndex, setSelectedSkillIndex] = useState(null);
-    const [showSkillModal, setShowSkillModal] = useState(false);
+    const [softSkills, setSoftSkills] = useState([]);
+    const [hardSkills, setHardSkills] = useState([]);
+    const [softselectedSkills, setSelectedSoftSkills] = useState([]);
+    const [hardselectedSkills, setSelectedHardSkills] = useState([]);
+    const [showHardSkillModal, setShowHardSkillModal] = useState(false);
+    const [showSoftSkillModal, setShowSoftSkillModal] = useState(false);
 
     const [languages, setLanguages] = useState([]);
     const [languageName, setLanguageName] = useState('');
@@ -143,30 +146,49 @@ const ProfileScreen = () => {
         setShowWorkExperienceModal(false);
     };
 
-    const handleAddSkill = (isTechnical) => {
-        const newSkill = { name: skillName };
-        if (isTechnical === true) {
-            setTechnicalSkills([...technicalSkills, newSkill]);
-        } else {
-            setNonTechnicalSkills([...nonTechnicalSkills, newSkill]);
-        }
-        setShowSkillModal(false);
-        setSkillName('');
+    const handleAddHardSkill = () => {
+        hardselectedSkills.forEach((selectedSkill) => {
+            const newSkill = { name: selectedSkill };
+            setHardSkills((prevSkills) => [...prevSkills, newSkill]);
+        });
+        setShowHardSkillModal(false);
+        setSelectedHardSkills([]);
     };
 
+    const handleAddSoftSkill = () => {
+        softselectedSkills.forEach((selectedSkill) => {
+            const newSkill = { name: selectedSkill };
+            setSoftSkills((prevSkills) => [...prevSkills, newSkill]);
+        });
+        setShowSoftSkillModal(false);
+        setSelectedSoftSkills([]);
+    };
 
 
     const handleDeleteSkill = (isTechnical, index) => {
-        const updatedSkills = isTechnical ? [...technicalSkills] : [...nonTechnicalSkills];
+        const updatedSkills = isTechnical ? [...hardSkills] : [...softSkills];
         updatedSkills.splice(index, 1);
         if (isTechnical) {
-            setTechnicalSkills(updatedSkills);
+            setHardSkills(updatedSkills);
         } else {
-            setNonTechnicalSkills(updatedSkills);
+            setSoftSkills(updatedSkills);
         }
     };
-    const handleSkillModalClose = () => {
-        setShowSkillModal(false);
+
+    const handleShowHardSkillModal = () => {
+        setShowHardSkillModal(true);
+    };
+
+    const handleShowSoftSkillModal = () => {
+        setShowSoftSkillModal(true);
+    };
+
+    const handleHardSkillModalClose = () => {
+        setShowHardSkillModal(false);
+    };
+
+    const handleSoftSkillModalClose = () => {
+        setShowSoftSkillModal(false);
     };
 
     const handleAddLanguage = () => {
@@ -250,18 +272,21 @@ const ProfileScreen = () => {
                                 onChangeText={setEmail}
                                 placeholder="Email"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
                             <TextInput
                                 value={phoneNumber}
                                 onChangeText={setPhoneNumber}
                                 placeholder="Phone Number"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
                             <TextInput
-                                value={phoneNumber}
+                                value={linkedinURL}
                                 onChangeText={setlinkedinURL}
                                 placeholder="LinkedIn URL"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
                             <TouchableOpacity style={styles.saveButton} onPress={selectedContactIndex == null ? handleSaveContactInfo : undefined}>
                                 <Text style={styles.saveButtonText}>Save</Text>
@@ -300,6 +325,7 @@ const ProfileScreen = () => {
                                 onChangeText={setBio}
                                 placeholder="Enter your bio"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
                             <TouchableOpacity style={styles.saveButton} onPress={selectedBioIndex == null ? handleSaveBio : undefined}>
                                 <Text style={styles.saveButtonText}>Save</Text>
@@ -349,36 +375,42 @@ const ProfileScreen = () => {
                                 onChangeText={setSchoolName}
                                 placeholder="School Name"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
                             <TextInput
                                 value={degree}
                                 onChangeText={setDegree}
                                 placeholder="Degree"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
                             <TextInput
                                 value={fieldOfStudies}
                                 onChangeText={setFieldOfStudies}
                                 placeholder="Field of Studies"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
                             <TextInput
                                 value={startDate}
                                 onChangeText={setStartDate}
                                 placeholder="Start Date"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
                             <TextInput
                                 value={endDate}
                                 onChangeText={setEndDate}
                                 placeholder="End Date (or currently working there)"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
                             <TextInput
                                 value={grade}
                                 onChangeText={setGrade}
                                 placeholder="Grade"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
                             <TouchableOpacity style={styles.saveButton} onPress={selectedEducationIndex == null ? handleAddEducation : undefined}>
                                 <Text style={styles.saveButtonText}>{selectedEducationIndex !== null ? 'Save' : 'Add'}</Text>
@@ -430,30 +462,35 @@ const ProfileScreen = () => {
                                 onChangeText={setCompanyName}
                                 placeholder="Company Name"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
                             <TextInput
                                 value={location}
                                 onChangeText={setLocation}
                                 placeholder="Location"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
                             <TextInput
                                 value={startDate}
                                 onChangeText={setStartDate}
                                 placeholder="Start Date"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
                             <TextInput
                                 value={endDate}
                                 onChangeText={setEndDate}
                                 placeholder="End Date (or currently working there)"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
                             <TextInput
                                 value={description}
                                 onChangeText={setDescription}
                                 placeholder="Description"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
                             <TouchableOpacity style={styles.saveButton} onPress={selectedWorkExperienceIndex == null ? handleAddWorkExperience : undefined}>
                                 <Text style={styles.saveButtonText}>{selectedWorkExperienceIndex !== null ? 'Save' : 'Add'}</Text>
@@ -461,82 +498,105 @@ const ProfileScreen = () => {
                         </View>
                     </Modal>
 
-                    {/* Skills */}
                     <View style={styles.section}>
-                        {/* Technical Skills */}
-                        <View style={styles.sectionHeader}>
-                            <Text style={styles.sectionTitle}>Technical Skills</Text>
-                            <TouchableOpacity onPress={() => setShowSkillModal(true, true)}>
-                                <Ionicons name="add-circle" size={24} color="black" />
-                            </TouchableOpacity>
-                        </View>
-                        <ScrollView>
-                            {technicalSkills.map((skill, index) => (
-                                <View key={index} style={styles.Item}>
-                                    <View style={styles.smallItem}>
-                                        <Text>{skill.name}</Text>
+
+                        {/* Hard Skills */}
+                        <View style={styles.section}>
+                            {/* Hard Skills Header */}
+                            <View style={styles.sectionHeader}>
+                                <Text style={styles.sectionTitle}>Hard Skills</Text>
+                                <TouchableOpacity onPress={handleShowHardSkillModal}>
+                                    <Ionicons name="add-circle" size={24} color="black" />
+                                </TouchableOpacity>
+                            </View>
+                            <ScrollView>
+                                {/* Display Hard Skills */}
+                                {hardSkills.map((skill, index) => (
+                                    <View key={index} style={styles.Item}>
+                                        <View style={styles.smallItem}>
+                                            <Text>{skill.name}</Text>
+                                        </View>
+                                        <TouchableOpacity onPress={() => handleDeleteSkill(true, index)}>
+                                            <Ionicons name="trash" size={24} color="black" />
+                                        </TouchableOpacity>
                                     </View>
-                                    <TouchableOpacity onPress={() => handleDeleteSkill(true, index)}>
-                                        <Ionicons name="trash" size={24} color="black" />
-                                    </TouchableOpacity>
-                                </View>
-                            ))}
-                        </ScrollView>
+                                ))}
+                            </ScrollView>
+                        </View>
 
                         {/* Separator */}
                         <View style={styles.separator} />
 
-                        {/* Non-Technical Skills */}
-                        <View style={styles.sectionHeader}>
-                            <Text style={styles.sectionTitle}>Non-technical Skills</Text>
-                            <TouchableOpacity onPress={() => setShowSkillModal(true, false)}>
-                                <Ionicons name="add-circle" size={24} color="black" />
-                            </TouchableOpacity>
-                        </View>
-                        <ScrollView>
-                            {nonTechnicalSkills.map((skill, index) => (
-                                <View key={index} style={styles.Item}>
-                                    <View style={styles.smallItem}>
-                                        <Text>{skill.name}</Text>
-                                    </View>
-                                    <TouchableOpacity onPress={() => handleDeleteSkill(false, index)}>
-                                        <Ionicons name="trash" size={24} color="black" />
-                                    </TouchableOpacity>
-                                </View>
-                            ))}
-                        </ScrollView>
-                    </View>
-
-                    {/* Skill Modal */}
-                    <Modal visible={showSkillModal} animationType="slide">
-                        <View style={styles.modalContainer}>
-                            <TouchableOpacity onPress={handleSkillModalClose} style={styles.closeButton}>
-                                <Ionicons name="close" size={24} color="black" />
-                            </TouchableOpacity>
-                            <Text style={styles.modalHeaderText}>Add Skill</Text>
-                            <TextInput
-                                value={skillName}
-                                onChangeText={setSkillName}
-                                placeholder="Skill Name"
-                                style={styles.input}
-                            />
-                            {/* Add Technical Skill */}
-                            <View style={padding = 10}>
-                                <TouchableOpacity
-                                    style={styles.saveButton}
-                                    onPress={() => handleAddSkill(true)}
-                                >
-                                    <Text style={styles.saveButtonText}>Add Technical Skill</Text>
-                                </TouchableOpacity>
-
-                                {/* Add Non-Technical Skill */}
-                                <TouchableOpacity
-                                    style={styles.saveButton}
-                                    onPress={() => handleAddSkill(false)}
-                                >
-                                    <Text style={styles.saveButtonText}>Add Non-technical Skill</Text>
+                        {/* SoftSkills */}
+                        <View style={styles.section}>
+                            {/* Soft Skills Header */}
+                            <View style={styles.sectionHeader}>
+                                <Text style={styles.sectionTitle}>Soft Skills</Text>
+                                <TouchableOpacity onPress={handleShowSoftSkillModal}>
+                                    <Ionicons name="add-circle" size={24} color="black" />
                                 </TouchableOpacity>
                             </View>
+                            <ScrollView>
+                                {/* Display Soft Skills */}
+                                {softSkills.map((skill, index) => (
+                                    <View key={index} style={styles.Item}>
+                                        <View style={styles.smallItem}>
+                                            <Text>{skill.name}</Text>
+                                        </View>
+                                        <TouchableOpacity onPress={() => handleDeleteSkill(false, index)}>
+                                            <Ionicons name="trash" size={24} color="black" />
+                                        </TouchableOpacity>
+                                    </View>
+                                ))}
+                            </ScrollView>
+                        </View>
+                    </View>
+
+                    {/* Hard Skills Modal */}
+                    <Modal visible={showHardSkillModal} animationType="slide">
+                        <View style={styles.modalContainer}>
+                            <TouchableOpacity onPress={handleHardSkillModalClose} style={styles.closeButton}>
+                                <Ionicons name="close" size={24} color="black" />
+                            </TouchableOpacity>
+                            <Text style={styles.modalHeaderText}>Add Hard Skill</Text>
+                            <MultipleSelectList
+                                data={hard}
+                                placeholder="Skills"
+                                setSelected={(val) => setSelectedHardSkills(val)}
+                                save="value"
+                                label="Hard Skills"
+                            />
+                            {/* Add HardSkill */}
+                            <TouchableOpacity
+                                style={styles.saveButton}
+                                onPress={handleAddHardSkill}
+                            >
+                                <Text style={styles.saveButtonText}>Add</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </Modal>
+
+                    {/* Soft Skills Modal */}
+                    <Modal visible={showSoftSkillModal} animationType="slide">
+                        <View style={styles.modalContainer}>
+                            <TouchableOpacity onPress={handleSoftSkillModalClose} style={styles.closeButton}>
+                                <Ionicons name="close" size={24} color="black" />
+                            </TouchableOpacity>
+                            <Text style={styles.modalHeaderText}>Add Soft Skill</Text>
+                            <MultipleSelectList
+                                data={soft}
+                                placeholder="Skills"
+                                setSelected={(val) => setSelectedSoftSkills(val)}
+                                save="value"
+                                label="Soft Skills"
+                            />
+                            {/* Add Soft Skill */}
+                            <TouchableOpacity
+                                style={styles.saveButton}
+                                onPress={handleAddSoftSkill}
+                            >
+                                <Text style={styles.saveButtonText}>Add</Text>
+                            </TouchableOpacity>
                         </View>
                     </Modal>
 
@@ -587,144 +647,5 @@ const ProfileScreen = () => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        marginBottom: 60
-    },
-    coverPhotoContainer: {
-        marginBottom: 20,
-    },
-    coverPhoto: {
-        width: '100%',
-        height: 200,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    profilePhotoContainer: {
-        position: 'absolute',
-        bottom: -60,
-        alignSelf: 'center',
-        zIndex: 1,
-    },
-    profilePhoto: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-        backgroundColor: 'white',
-        borderWidth: 2,
-        borderColor: 'white',
-        justifyContent: 'center',
-        alignItems: 'center',
-        overflow: 'hidden',
-    },
-    profileImage: {
-        width: '100%',
-        height: '100%',
-    },
-    editIcon: {
-        position: 'absolute',
-        bottom: 5,
-        right: 5,
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-        borderRadius: 20,
-        padding: 5,
-    },
-    userInfo: {
-        marginBottom: 20,
-        marginTop: 20,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 10,
-    },
-    infoText: {
-        fontSize: 16,
-        marginBottom: 5,
-    },
-    modalContainer: {
-        width: '80%',
-        height: '60%',
-        alignSelf: 'center',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#fff',
-        borderRadius: 10,
-    },
-    modalHeaderText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    input: {
-        width: '80%',
-        borderWidth: 1,
-        borderColor: COLORS.primary,
-        borderRadius: 5,
-        padding: 10,
-        marginBottom: 20,
-        color: COLORS.primary,
-    },
-    closeButton: {
-        position: 'absolute',
-        top: 10,
-        left: 10,
-    },
-    separator: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        marginBottom: 20,
-    },
-    section: {
-        marginBottom: 20,
-        backgroundColor: '#fff',
-        padding: 10,
-        borderRadius: 5,
-    },
-    sectionHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 10,
-    },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginRight: 10,
-    },
-    saveButton: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        alignSelf: 'center',
-        backgroundColor: COLORS.tertiary,
-        padding: 10,
-        borderRadius: 5,
-        alignSelf: 'flex-end',
-    },
-    saveButtonText: {
-        color: 'white',
-        fontWeight: 'bold',
-    },
-    modalHeader: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        paddingBottom: 10,
-        marginBottom: 20,
-    },
-    Item: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 10,
-    },
-    smallItem: {
-        borderRadius: 20,
-        padding: 5,
-        borderWidth: 2,
-        borderColor: COLORS.tertiary,
-    }
-
-});
 
 export default ProfileScreen;
