@@ -120,7 +120,7 @@ export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' });
   const [phone, setPhone] = useState({ value: '', error: '' });
   const [password, setPassword] = useState({ value: '', error: '' });
-  const [selectedCity, setSelectedCity] = useState([]);
+  const [selectedCity, setSelectedCity] = useState({ value: '', error: '' });
   const [selectedIndustry, setSelectedIndustry] = useState([]);
 
   const url = "http://192.168.1.21:8000/users";
@@ -145,8 +145,9 @@ export default function RegisterScreen({ navigation }) {
       phone: phone.value,
       password: password.value,
       city: selectedCity,
-      industries : selectedIndustry
+      industries: selectedIndustry.map(item => item.value)
     };
+    console.log("User Data:", userData);
     axios.post(url, userData)
       .then(response => {
         console.log(response.data);
