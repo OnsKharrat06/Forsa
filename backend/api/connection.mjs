@@ -30,6 +30,7 @@ app.post('/users', async (req, res) => {
     
     // Insert industries into user_industries table
     if (industries && industries.length > 0) {
+      console.log("industries:", industries)
       for (const industry_name of industries) {
         await postIndustryToUser(userid, industry_name);
       }
