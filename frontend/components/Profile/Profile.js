@@ -7,6 +7,7 @@ import { hard, soft } from "./Skill";
 import { MultipleSelectList } from 'react-native-dropdown-select-list';
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
+import axios from 'axios';
 
 const ProfileScreen = () => {
     const [editMode, setEditMode] = useState(false);
@@ -96,11 +97,22 @@ const ProfileScreen = () => {
 
 
     useEffect(() => {
-        // Fetch user data from your backend or API
-        // Update state with user data
-        // Example:
-        // fetchUserData().then(data => setUserData(data));
+        getAllSkills();
     }, []);
+
+    const getAllSkills = async () => {
+        try{
+        const {data:{skills}} = await axios.get('http://192.168.146.43:8000/user_skills/9');
+        console.log(skills);
+        const allSkills = skills.map(({skill, skill_type,user_skill_id,...rest})=>({name: skill, skillType: skill_type, skillID: user_skill_id}));
+        setSoftSkills(allSkills.filter(elm => elm.skillType == "soft"));
+        setHardSkills(allSkills.filter(elm => elm.skillType == "hard"));
+
+        }catch(error){
+            console.error("error getting skills:", error);
+        }
+    
+    }
 
     const handleContactIconPress = () => {
         setShowContactModal(true);
@@ -193,11 +205,13 @@ const ProfileScreen = () => {
         setShowWorkExperienceModal(false);
     };
 
-    const handleAddHardSkill = () => {
-        hardselectedSkills.forEach((selectedSkill) => {
-            const newSkill = { name: selectedSkill };
-            setHardSkills((prevSkills) => [...prevSkills, newSkill]);
-        });
+    const handleAddHardSkill = async () => {
+        try {
+            await axios.post("http://192.168.146.43:8000/user_skills/9", {skills:hardselectedSkills.map((elm)=>({skill:elm, skill_type: "hard"}))});
+            await getAllSkills();
+        } catch (error) {
+            
+        }
         setShowHardSkillModal(false);
         setSelectedHardSkills([]);
     };
@@ -212,13 +226,12 @@ const ProfileScreen = () => {
     };
 
 
-    const handleDeleteSkill = (isTechnical, index) => {
-        const updatedSkills = isTechnical ? [...hardSkills] : [...softSkills];
-        updatedSkills.splice(index, 1);
-        if (isTechnical) {
-            setHardSkills(updatedSkills);
-        } else {
-            setSoftSkills(updatedSkills);
+    const handleDeleteSkill = async (skillID) => {
+        try {
+            await axios.delete(`http://192.168.146.43:8000/user_skills/${skillID}`);
+            await getAllSkills();
+        } catch (error) {
+            
         }
     };
 
@@ -690,7 +703,7 @@ const ProfileScreen = () => {
                                         <View style={styles.smallItem}>
                                             <Text>{skill.name}</Text>
                                         </View>
-                                        <TouchableOpacity onPress={() => handleDeleteSkill(true, index)}>
+                                        <TouchableOpacity onPress={() => handleDeleteSkill(skill.skillID)}>
                                             <Ionicons name="trash" size={24} color="black" />
                                         </TouchableOpacity>
                                     </View>
@@ -717,7 +730,7 @@ const ProfileScreen = () => {
                                         <View style={styles.smallItem}>
                                             <Text>{skill.name}</Text>
                                         </View>
-                                        <TouchableOpacity onPress={() => handleDeleteSkill(false, index)}>
+                                        <TouchableOpacity onPress={() => handleDeleteSkill(skill.skillID)}>
                                             <Ionicons name="trash" size={24} color="black" />
                                         </TouchableOpacity>
                                     </View>

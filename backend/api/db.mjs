@@ -4,7 +4,7 @@ import mysql from 'mysql2';
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: 'MindYourBusiness',
+    password: '',
     database: 'fursadashs1',
 }).promise()
 
@@ -425,7 +425,7 @@ export async function getAllSkills(userid) {
 
 export async function postSkillToUser(userid, skill, skill_type) {
   try {
-    const result = await pool.query('INSERT INTO user_skills (userid, skill, skill_type) VALUES (?, ?)', [userid, skill, skill_type]);
+    const result = await pool.query('INSERT INTO user_skills (userid, skill, skill_type) VALUES (?, ?, ?)', [userid, skill, skill_type]);
     return result;
   } catch (error) {
     console.error("Error adding skill to user", error);

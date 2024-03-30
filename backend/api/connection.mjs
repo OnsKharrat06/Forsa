@@ -507,19 +507,23 @@ app.get('/user_skills/:userid',async (req, res) => {
 
 app.post('/user_skills/:userid', async (req, res) => {
   const { userid } = req.params;
-  const { skill } = req.body;
+  const {skills} = req.body;
 
-  if (!skill) {
+  if (!skills) {
     return res.status(400).json({ error: 'Missing skill' });
   }
 
   try {
-    await postSkillToUser(userid, skill);
+    for (const {skill, skill_type} of skills) {
+      await postSkillToUser(userid, skill, skill_type);
+    }
+    
 
     res.status(201).json({
       message: 'Skill added successfully to user',
       userid: userid,
-      skill: skill
+      skills : skills
+
     });
   } catch (error) {
     console.error("Error on adding skill to user", error);
