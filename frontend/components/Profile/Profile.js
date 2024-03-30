@@ -217,22 +217,29 @@ const ProfileScreen = () => {
     };
 
     const handleAddHardSkill = async () => {
+        if (hardselectedSkills.length === 0) {
+            alert("Please select at least one hard skill.");
+            return;
+        }
+    
         try {
             await axios.post("http://192.168.146.43:8000/user_skills/9", {skills:hardselectedSkills.map((elm)=>({skill:elm, skill_type: "hard"}))});
             await getAllSkills();
         } catch (error) {
-            
+            alert("An error occurred while adding hard skills. Please try again later.");
+            console.error("Error adding hard skills:", error);
         }
         setShowHardSkillModal(false);
         setSelectedHardSkills([]);
     };
+    
 
     const handleAddSoftSkill = () => {
         if (softselectedSkills.length === 0) {
             alert("Please select at least one soft skill.");
             return;
         }
-
+    
         softselectedSkills.forEach((selectedSkill) => {
             const newSkill = { name: selectedSkill };
             setSoftSkills((prevSkills) => [...prevSkills, newSkill]);
@@ -240,6 +247,7 @@ const ProfileScreen = () => {
         setShowSoftSkillModal(false);
         setSelectedSoftSkills([]);
     };
+    
 
 
     const handleDeleteSkill = async (skillID) => {
