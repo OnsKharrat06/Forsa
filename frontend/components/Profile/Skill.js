@@ -168,3 +168,11 @@ export const soft = [
     { key: '5', value: 'Writing' },
     { key: '6', value: 'Time Management' }
 ];
+
+export const  proficiencyOptions = [
+    { key: '1', value: 'Elementary proficiency' },
+    { key: '2', value: 'Limited working proficiency' },
+    { key: '3', value: 'Professional working proficiency' },
+    { key: '4', value: 'Full professional proficiency' },
+    { key: '5', value: 'Native or bilingual proficiency' }
+];

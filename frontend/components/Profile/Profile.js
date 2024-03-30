@@ -3,8 +3,8 @@ import { View, Text, ScrollView, Pressable, Platform, TouchableOpacity, TextInpu
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal";
 import styles from "./ProfileStyle";
-import { hard, soft } from "./Skill";
-import { MultipleSelectList } from 'react-native-dropdown-select-list';
+import { hard, soft, proficiencyOptions } from "./Skill";
+import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
 
@@ -48,9 +48,9 @@ const ProfileScreen = () => {
 
     const [languages, setLanguages] = useState([]);
     const [languageName, setLanguageName] = useState('');
-    const [selectedLanguageIndex, setSelectedLanguageIndex] = useState(null);
+    const [proficiencyName, setProficiencyName] = useState('');
+    const [proficiencyIndex, setProficiencyIndex] = useState(null);
     const [showLanguageModal, setShowLanguageModal] = useState(false);
-
 
     const [showPicker, setShowPicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
@@ -134,6 +134,11 @@ const ProfileScreen = () => {
     };
 
     const handleAddEducation = () => {
+        if (schoolName.trim() === '' || degree.trim() === '' || fieldOfStudies.trim() === '') {
+            alert("Please fill in all required fields.");
+            return;
+        }
+
         const newEducation = {
             schoolName,
             degree,
@@ -166,6 +171,11 @@ const ProfileScreen = () => {
     };
 
     const handleAddWorkExperience = () => {
+        if (companyName.trim() === '' || location.trim() === '') {
+            alert("Please fill in all required fields.");
+            return;
+        }
+
         const newWorkExperience = {
             companyName,
             location,
@@ -184,6 +194,7 @@ const ProfileScreen = () => {
         setDescription('');
     };
 
+
     const handleDeleteWorkExperience = (index) => {
         const updatedWorkExperience = [...workExperience];
         updatedWorkExperience.splice(index, 1);
@@ -194,6 +205,11 @@ const ProfileScreen = () => {
     };
 
     const handleAddHardSkill = () => {
+        if (hardselectedSkills.length === 0) {
+            alert("Please select at least one hard skill.");
+            return;
+        }
+
         hardselectedSkills.forEach((selectedSkill) => {
             const newSkill = { name: selectedSkill };
             setHardSkills((prevSkills) => [...prevSkills, newSkill]);
@@ -203,6 +219,11 @@ const ProfileScreen = () => {
     };
 
     const handleAddSoftSkill = () => {
+        if (softselectedSkills.length === 0) {
+            alert("Please select at least one soft skill.");
+            return;
+        }
+
         softselectedSkills.forEach((selectedSkill) => {
             const newSkill = { name: selectedSkill };
             setSoftSkills((prevSkills) => [...prevSkills, newSkill]);
@@ -239,20 +260,36 @@ const ProfileScreen = () => {
     };
 
     const handleAddLanguage = () => {
-        const newLanguage = { name: languageName };
+        if (languageName.trim() === '' || proficiencyName.trim() === '') {
+            alert("Please enter a language name and select a proficiency level.");
+            return;
+        }
+
+        const newLanguage = {
+            name: languageName,
+            proficiency: proficiencyName
+        };
+
         setLanguages([...languages, newLanguage]);
         setShowLanguageModal(false);
         setLanguageName('');
+        setProficiencyName('');
     };
+
 
     const handleDeleteLanguage = (index) => {
         const updatedLanguages = [...languages];
         updatedLanguages.splice(index, 1);
         setLanguages(updatedLanguages);
     };
+
     const handleLanguageModalClose = () => {
         setShowLanguageModal(false);
+        setLanguageName('');
+        setProficiencyIndex(null);
     };
+
+
 
 
     return (
@@ -582,7 +619,7 @@ const ProfileScreen = () => {
                                 style={styles.input}
                                 placeholderTextColor="gray"
                             />
-                                                        {showPicker && (
+                            {showPicker && (
                                 <DateTimePicker
                                     mode="date"
                                     display="spinner"
@@ -788,7 +825,7 @@ const ProfileScreen = () => {
                             {languages.map((language, index) => (
                                 <View key={index} style={styles.Item}>
                                     <View style={styles.smallItem}>
-                                        <Text>{language.name}</Text>
+                                        <Text>{language.name} : {language.proficiency}</Text>
                                     </View>
                                     <TouchableOpacity onPress={() => handleDeleteLanguage(index)}>
                                         <Ionicons name="trash" size={24} color="black" />
@@ -797,7 +834,7 @@ const ProfileScreen = () => {
                             ))}
                         </ScrollView>
                     </View>
-                    {/* Language Modal */}
+
                     <Modal visible={showLanguageModal} animationType="slide">
                         <View style={styles.modalContainer}>
                             <TouchableOpacity onPress={handleLanguageModalClose} style={styles.closeButton}>
@@ -809,8 +846,16 @@ const ProfileScreen = () => {
                                 onChangeText={setLanguageName}
                                 placeholder="Language Name"
                                 style={styles.input}
+                                placeholderTextColor="gray"
                             />
-                            <TouchableOpacity style={styles.saveButton} onPress={selectedLanguageIndex == null ? handleAddLanguage : undefined}>
+                            <SelectList
+                                data={proficiencyOptions}
+                                placeholder="Language Proficiency"
+                                setSelected={(val) => setProficiencyName(val)}
+                                save="value"
+                                label="Language Proficiency"
+                            />
+                            <TouchableOpacity style={styles.saveButton} onPress={handleAddLanguage}>
                                 <Text style={styles.saveButtonText}>Add</Text>
                             </TouchableOpacity>
                         </View>
