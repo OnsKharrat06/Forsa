@@ -405,3 +405,72 @@ export async function getJobSkillsByJobId(jobId) {
   }
 }
 
+
+
+//user_skills:
+
+
+//get user_skills
+export async function getAllSkills(userid) {
+  try {
+      const [rows] = await pool.query('select * from user_skills where userid = ?', [userid]);
+      return rows;
+  } catch (error) {
+      console.error("Error getting user skills", error);
+      throw error;
+  }
+}
+
+//post user_industries
+
+export async function postSkillToUser(userid, skill, skill_type) {
+  try {
+    const result = await pool.query('INSERT INTO user_skills (userid, skill, skill_type) VALUES (?, ?)', [userid, skill, skill_type]);
+    return result;
+  } catch (error) {
+    console.error("Error adding skill to user", error);
+    throw error;
+  }
+}
+
+//update user_industries
+
+// Function to update user skills
+export async function updateSkill(user_skill_id, fieldsToUpdate) {
+  const setClause = [];
+  const values = [];
+
+  for (const [key, value] of Object.entries(fieldsToUpdate)) {
+    setClause.push(`${key} = ?`);
+    values.push(value);
+  }
+
+  if (!setClause.length) {
+    throw new Error("No fields provided for update");
+  }
+
+  values.push(user_skill_id); 
+
+  const query = `UPDATE user_skills SET ${setClause.join(', ')} WHERE user_skill_id = ?`;
+
+  try {
+    const [result] = await pool.query(query, values);
+    console.log("Skill updated successfully:", result);
+    return result;
+  } catch (error) {
+    console.error("Error updating skill in the database:", error);
+    throw error;
+  }
+}
+
+
+export async function deleteUserSkill(user_skill_id) {
+  try {
+    const result = await pool.query('DELETE FROM user_skills WHERE user_skill_id = ?', [user_skill_id]);
+    return result;
+  } catch (error) {
+    console.error("Error deleting user skill", error);
+    throw error;
+  }
+}
+
