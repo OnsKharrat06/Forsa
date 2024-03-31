@@ -18,6 +18,7 @@ import {getAllUserLanguages, postUserLanguage, updateUserLanguage, deleteUserLan
 import { getAllJobListings, getJobListingById} from './db.mjs';
 import {getJobSkillsByJobId} from './db.mjs';
 import { getAllSkills, postSkillToUser, updateSkill, deleteUserSkill } from './db.mjs';
+import { getEducation , postEducation, deleteEducation} from './db.mjs';
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -565,9 +566,57 @@ app.delete('/user_skills/:user_skill_id', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
- //
+ //education
 
+ app.get('/education/:userid',async (req, res) => {
+  const { userid } = req.params;
 
+  try {
+    const educations = await getEducation(userid);
+
+      res.status(200).json({
+        message: 'all educations retrieved',
+        educations: educations
+      });
+  } catch (error) {
+    console.error("Error on retrieving user educations", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+
+})
+
+app.post('/education/:userid', async (req, res) => {
+  const { userid } = req.params;
+  const fields = req.body;
+
+  try {
+    await postEducation(userid, fields);
+
+    res.status(201).json({
+      message: 'User education added successfully',
+      education : fields
+    });
+  } catch (error) {
+    console.error("Error adding user language", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.delete('/education/:education_id', async (req, res) => {
+  const { education_id } = req.params; 
+
+  try {
+    await deleteEducation(education_id);
+
+    res.status(200).json({
+      message: 'Education removed successfully',
+      education_id
+    });
+  } catch (error) {
+    console.error("Error on deleting education", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 // Start the server

@@ -421,7 +421,7 @@ export async function getAllSkills(userid) {
   }
 }
 
-//post user_industries
+//post user_skills
 
 export async function postSkillToUser(userid, skill, skill_type) {
   try {
@@ -433,7 +433,7 @@ export async function postSkillToUser(userid, skill, skill_type) {
   }
 }
 
-//update user_industries
+//update user_skills
 
 // Function to update user skills
 export async function updateSkill(user_skill_id, fieldsToUpdate) {
@@ -474,3 +474,53 @@ export async function deleteUserSkill(user_skill_id) {
   }
 }
 
+//education
+
+//get education
+export async function getEducation(userid) {
+  try {
+      const [rows] = await pool.query('select * from education where userid = ?', [userid]);
+      return rows;
+  } catch (error) {
+      console.error("Error getting user education", error);
+      throw error;
+  }
+}
+
+
+//post education
+
+export async function postEducation(userid, fields) {
+  try {
+    const setClause = [];
+    const values = [];
+  
+    for (const [key, value] of Object.entries(fields)) {
+      setClause.push(`${key}`);
+      values.push(value);
+    }
+  
+    if (!setClause.length) {
+      throw new Error("No fields provided for update");
+    }
+    setClause.push("userid");
+    values.push(userid); 
+
+
+    const result = await pool.query(`INSERT INTO education (${setClause.join(', ')}) VALUES(${setClause.map(e => "?").join(', ')})`, values);
+    return result;
+  } catch (error) {
+    console.error("Error adding skill to user", error);
+    throw error;
+  }
+}
+
+export async function deleteEducation(education_id) {
+  try {
+    const result = await pool.query('DELETE FROM education WHERE education_id = ?', [education_id]);
+    return result;
+  } catch (error) {
+    console.error("Error deleting education", error);
+    throw error;
+  }
+}
