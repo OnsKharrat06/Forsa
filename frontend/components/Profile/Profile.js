@@ -101,6 +101,7 @@ const ProfileScreen = () => {
         getAllSkills();
         getAllLanguages();
         getAllEducations();
+        getAllWorkExperience();
     }, []);
 
     const getAllSkills = async () => {
@@ -350,9 +351,6 @@ const ProfileScreen = () => {
         } catch (error) {
             console.error("Error adding language:", error);
         }
-
-        
-            
 
         setLanguages([...languages, newLanguage]);
         setShowLanguageModal(false);
