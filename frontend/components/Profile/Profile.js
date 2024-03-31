@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, ScrollView, Pressable, Platform, TouchableOpacity, TextInput, ImageBackground, Image } from 'react-native';
+import { View, Text, ScrollView, Pressable, Platform, TouchableOpacity, TextInput, ImageBackground, Image, ActivityIndicator  } from 'react-native';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal";
 import styles from "./ProfileStyle";
@@ -57,6 +57,8 @@ const ProfileScreen = () => {
     const [showPicker, setShowPicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
+    const [loadingBio, setLoadingBio] = useState(true);
+
     const toggleDatepicker = () => {
         setShowPicker(!showPicker);
     };
@@ -102,7 +104,20 @@ const ProfileScreen = () => {
         getAllLanguages();
         getAllEducations();
         getAllWorkExperience();
+        getUserBio();
     }, []);
+
+    const getUserBio = async () => {
+        try {
+            const response = await axios.get(`http://192.168.1.21:8000/users/bio/4`);
+            const { bio } = response.data;
+            setBio(bio); 
+            setLoadingBio(false); 
+        } catch (error) {
+            console.error("Error fetching user bio:", error);
+            
+        }
+    };
 
     const getAllSkills = async () => {
         try{
@@ -183,11 +198,15 @@ const ProfileScreen = () => {
         setShowContactModal(false);
     };
 
-    const handleSaveBio = () => {
-        // Save edited bio to backend
-        // Example:
-        // saveBioToBackend(editBio);
-        setShowBioModal(false);
+    const handleSaveBio = async () => {
+        try {
+            const response = await axios.put(`http://192.168.1.21:8000/users/4`, { bio });
+            console.log(response.data); // Log the response from the server
+            setShowBioModal(false);
+        } catch (error) {
+            console.error("Error updating bio:", error);
+            // Handle error here
+        }
     };
 
     const handleEditBio = () => {
@@ -484,6 +503,7 @@ const ProfileScreen = () => {
                     </View>
 
                     {/* Bio Modal */}
+                 
                     <Modal visible={showBioModal} animationType="slide">
                         <View style={styles.modalContainer}>
                             <TouchableOpacity onPress={handleBioModalClose} style={styles.closeButton}>
@@ -504,7 +524,7 @@ const ProfileScreen = () => {
 
                         </View>
                     </Modal>
-
+               
                     {/* Education Section */}
                     <View style={styles.section}>
                         {/* Title and Add Icon */}
