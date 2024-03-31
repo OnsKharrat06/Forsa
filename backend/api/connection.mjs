@@ -372,7 +372,7 @@ app.get('/user_languages/:userid', async (req, res) => {
 
     res.status(200).json({
       message: 'User languages retrieved successfully',
-      user_languages: userLanguages
+      languages: userLanguages
     });
   } catch (error) {
     console.error("Error retrieving user languages", error);
