@@ -36,6 +36,7 @@ const ProfileScreen = () => {
     const [selectedWorkExperienceIndex, setSelectedWorkExperienceIndex] = useState(null);
     const [companyName, setCompanyName] = useState('');
     const [location, setLocation] = useState('');
+    const [jobTitle, setJobTitle] = useState('');
     const [currentlyWorking, setCurrentlyWorking] = useState(false);
     const [description, setDescription] = useState('');
     const [showWorkExperienceModal, setShowWorkExperienceModal] = useState(false);
@@ -104,7 +105,7 @@ const ProfileScreen = () => {
 
     const getAllSkills = async () => {
         try{
-        const {data:{skills}} = await axios.get('http://192.168.221.43:8000/user_skills/9');
+        const {data:{skills}} = await axios.get('http://192.168.1.21:8000/user_skills/9');
         console.log(skills);
         const allSkills = skills.map(({skill, skill_type,user_skill_id,...rest})=>({name: skill, skillType: skill_type, skillID: user_skill_id}));
         setSoftSkills(allSkills.filter(elm => elm.skillType == "soft"));
@@ -118,7 +119,7 @@ const ProfileScreen = () => {
 
     const getAllLanguages = async () => {
         try {
-            const {data:{languages}} = await axios.get('http://192.168.221.43:8000/user_languages/9');
+            const {data:{languages}} = await axios.get('http://192.168.1.21:8000/user_languages/9');
             console.log(languages);
             const allLanguages = languages.map(({language, proficiency, user_language_id,...rest})=>({name: language, proficiency, languageID: user_language_id}));
             setLanguages(allLanguages);
@@ -130,7 +131,7 @@ const ProfileScreen = () => {
 
     const getAllEducations = async () => {
         try {
-            const {data:{educations}} = await axios.get('http://192.168.221.43:8000/education/9');
+            const {data:{educations}} = await axios.get('http://192.168.1.21:8000/education/9');
             console.log(educations);
             const allEducations = educations.map(({ education_id, school_name, degree, field_of_study, start_date, end_date, grade,...rest }) => ({
                 educationID: education_id,
@@ -147,7 +148,25 @@ const ProfileScreen = () => {
             console.error("error education", error);
         }
     }
+    const getAllWorkExperience = async () => {
+        try {
+            const {data:{workExperience}} = await axios.get('http://192.168.1.21:8000/user_work_experience/4');
+            console.log(workExperience);
+            const allWorkExperiences = workExperience.map(({ experience_id, job_title, companyname, location, start_date, end_date, short_description,...rest }) => ({
+                workExperienceID: experience_id,
+                jobTitle: job_title,
+                companyName: companyname,
+                location: location,
+                startDate: start_date,
+                endDate: end_date,
+                description: short_description
+            }));
+            setWorkExperience(allWorkExperiences);
 
+        } catch (error) {
+            console.error("error work experience", error);
+        }
+    }
     const handleContactIconPress = () => {
         setShowContactModal(true);
     };
@@ -186,7 +205,7 @@ const ProfileScreen = () => {
         }
 
         try {
-            await axios.post("http://192.168.221.43:8000/education/9", { school_name: schoolName, degree, field_of_study: fieldOfStudies, start_date: startDate, end_date: endDate, grade});
+            await axios.post("http://192.168.1.21:8000/education/9", { school_name: schoolName, degree, field_of_study: fieldOfStudies, start_date: startDate, end_date: endDate, grade});
             getAllEducations();
         } catch (error) {
             console.error("Error adding education:", error);
@@ -200,11 +219,31 @@ const ProfileScreen = () => {
         setEndDate(new Date());
         setGrade('');
     };
-
+    const handleAddWorkExperience = async () => {
+        if (companyName.trim() === '' || location.trim() === '') {
+            alert("Please fill in all required fields.");
+            return;
+        }
+        try {
+            await axios.post("http://192.168.1.21:8000/user_work_experience/4", { job_title: jobTitle, companyname: companyName, location, start_date: startDate, end_date: endDate, short_description: description});
+            getAllWorkExperience();
+        } catch (error) {
+            console.error("Error adding work experience:", error);
+        }
+       
+        setShowWorkExperienceModal(false);
+        // Reset form fields
+        setJobTitle('');
+        setCompanyName('');
+        setLocation('');
+        setStartDate(new Date());
+        setEndDate(new Date());
+        setDescription('');
+    };
 
     const handleDeleteEducation = async (educationID) => {
         try {
-            await axios.delete(`http://192.168.221.43:8000/education/${educationID}`);
+            await axios.delete(`http://192.168.1.21:8000/education/${educationID}`);
             await getAllEducations();
         } catch (error) {
             
@@ -216,35 +255,16 @@ const ProfileScreen = () => {
         setShowEducationModal(false);
     };
 
-    const handleAddWorkExperience = () => {
-        if (companyName.trim() === '' || location.trim() === '') {
-            alert("Please fill in all required fields.");
-            return;
+    
+
+
+    const handleDeleteWorkExperience = async (workExperienceID) => {
+        try {
+            await axios.delete(`http://192.168.1.21:8000/user_work_experience/${workExperienceID}`);
+            await getAllWorkExperience();
+        } catch (error) {
+            
         }
-
-        const newWorkExperience = {
-            companyName,
-            location,
-            startDate: startDate || null,
-            endDate: currentlyWorking ? 'Currently Working' : endDate || null,
-            description,
-        };
-        setWorkExperience([...workExperience, newWorkExperience]);
-        setShowWorkExperienceModal(false);
-        // Reset form fields
-        setCompanyName('');
-        setLocation('');
-        setStartDate(new Date());
-        setEndDate(new Date());
-        setCurrentlyWorking(false);
-        setDescription('');
-    };
-
-
-    const handleDeleteWorkExperience = (index) => {
-        const updatedWorkExperience = [...workExperience];
-        updatedWorkExperience.splice(index, 1);
-        setWorkExperience(updatedWorkExperience);
     };
     
     const handleWorkExperienceModalClose = () => {
@@ -258,7 +278,7 @@ const ProfileScreen = () => {
         }
     
         try {
-            await axios.post("http://192.168.167.43:8000/user_skills/9", {skills:hardselectedSkills.map((elm)=>({skill:elm, skill_type: "hard"}))});
+            await axios.post("http://192.168.1.21:8000/user_skills/9", {skills:hardselectedSkills.map((elm)=>({skill:elm, skill_type: "hard"}))});
             await getAllSkills();
         } catch (error) {
             alert("An error occurred while adding hard skills. Please try again later.");
@@ -276,7 +296,7 @@ const ProfileScreen = () => {
         }
     
         try {
-            await axios.post("http://192.168.167.43:8000/user_skills/9", {skills:softselectedSkills.map((elm)=>({skill:elm, skill_type: "soft"}))});
+            await axios.post("http://192.168.1.21:8000/user_skills/9", {skills:softselectedSkills.map((elm)=>({skill:elm, skill_type: "soft"}))});
             await getAllSkills();
         } catch (error) {
             alert("An error occurred while adding hard skills. Please try again later.");
@@ -291,7 +311,7 @@ const ProfileScreen = () => {
 
     const handleDeleteSkill = async (skillID) => {
         try {
-            await axios.delete(`http://192.168.167.43:8000/user_skills/${skillID}`);
+            await axios.delete(`http://192.168.1.21:8000/user_skills/${skillID}`);
             await getAllSkills();
         } catch (error) {
             
@@ -325,7 +345,7 @@ const ProfileScreen = () => {
         };
 
         try {
-            await axios.post("http://192.168.167.43:8000/user_languages/9", {language: newLanguage.name, proficiency: newLanguage.proficiency});
+            await axios.post("http://192.168.1.21:8000/user_languages/9", {language: newLanguage.name, proficiency: newLanguage.proficiency});
             getAllLanguages();
         } catch (error) {
             console.error("Error adding language:", error);
@@ -345,7 +365,7 @@ const ProfileScreen = () => {
 
     const handleDeleteLanguage = async (languageID) => {
         try {
-            await axios.delete(`http://192.168.167.43:8000/user_languages/${languageID}`);
+            await axios.delete(`http://192.168.1.21:8000/user_languages/${languageID}`);
             await getAllLanguages();
         } catch (error) {
             
@@ -657,7 +677,7 @@ const ProfileScreen = () => {
                                         <Text>Description: {item.description}</Text>
                                     </View>
 
-                                    <TouchableOpacity onPress={() => handleDeleteWorkExperience(index)}>
+                                    <TouchableOpacity onPress={() => handleDeleteWorkExperience(item.workExperienceID)}>
                                         <Ionicons name="trash" size={24} color="black" />
                                     </TouchableOpacity>
 
@@ -674,6 +694,13 @@ const ProfileScreen = () => {
                                 <Ionicons name="close" size={24} color="black" />
                             </TouchableOpacity>
                             <Text style={styles.modalHeaderText}>{selectedWorkExperienceIndex !== null ? 'Edit Work Experience' : 'Add Work Experience'}</Text>
+                            <TextInput
+                                value={jobTitle}
+                                onChangeText={setJobTitle}
+                                placeholder="Job Title"
+                                style={styles.input}
+                                placeholderTextColor="gray"
+                            />
                             <TextInput
                                 value={companyName}
                                 onChangeText={setCompanyName}
