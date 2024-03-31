@@ -98,6 +98,7 @@ const ProfileScreen = () => {
 
     useEffect(() => {
         getAllSkills();
+        getAllLanguages();
     }, []);
 
     const getAllSkills = async () => {
@@ -112,6 +113,18 @@ const ProfileScreen = () => {
             console.error("error getting skills:", error);
         }
     
+    }
+
+    const getAllLanguages = async () => {
+        try {
+            const {data:{languages}} = await axios.get('http://192.168.167.43:8000/user_languages/9');
+            console.log(languages);
+            const allLanguages = languages.map(({language, proficiency, user_language_id,...rest})=>({name: language, proficiency, languageID: user_language_id}));
+            setLanguages(allLanguages);
+
+        } catch (error) {
+            console.error("error getting languages:", error);
+        }
     }
 
     const handleContactIconPress = () => {
@@ -251,6 +264,7 @@ const ProfileScreen = () => {
         setSelectedSoftSkills([]);
     };
     
+    
 
 
     const handleDeleteSkill = async (skillID) => {
@@ -278,28 +292,42 @@ const ProfileScreen = () => {
         setShowSoftSkillModal(false);
     };
 
-    const handleAddLanguage = () => {
+    const handleAddLanguage = async () => {
         if (languageName.trim() === '' || proficiencyName.trim() === '') {
             alert("Please enter a language name and select a proficiency level.");
             return;
         }
-
         const newLanguage = {
             name: languageName,
             proficiency: proficiencyName
         };
 
+        try {
+            await axios.post("http://192.168.167.43:8000/user_languages/9", {language: newLanguage.name, proficiency: newLanguage.proficiency});
+            getAllLanguages();
+        } catch (error) {
+            console.error("Error adding language:", error);
+        }
+
+        
+            
+
         setLanguages([...languages, newLanguage]);
         setShowLanguageModal(false);
         setLanguageName('');
         setProficiencyName('');
+        
     };
 
 
-    const handleDeleteLanguage = (index) => {
-        const updatedLanguages = [...languages];
-        updatedLanguages.splice(index, 1);
-        setLanguages(updatedLanguages);
+
+    const handleDeleteLanguage = async (languageID) => {
+        try {
+            await axios.delete(`http://192.168.167.43:8000/user_languages/${languageID}`);
+            await getAllLanguages();
+        } catch (error) {
+            
+        }
     };
 
     const handleLanguageModalClose = () => {
@@ -846,7 +874,7 @@ const ProfileScreen = () => {
                                     <View style={styles.smallItem}>
                                         <Text>{language.name} : {language.proficiency}</Text>
                                     </View>
-                                    <TouchableOpacity onPress={() => handleDeleteLanguage(index)}>
+                                    <TouchableOpacity onPress={() => handleDeleteLanguage(language.languageID)}>
                                         <Ionicons name="trash" size={24} color="black" />
                                     </TouchableOpacity>
                                 </View>
