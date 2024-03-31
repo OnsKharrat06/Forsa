@@ -13,7 +13,7 @@ import { getCVsByUserId } from './db.mjs';
 import { getUserByID, updateUser, getMatchingPerUserID, getFavoritesPerUserID } from './db.mjs';
 //New version :
 import { getAllIndustries, postIndustryToUser, updateIndustry, deleteUserIndustry} from './db.mjs';
-import {getAllWorkExperience, postWorkExperience, updateWorkExperience, deleteWorkExperience} from './db.mjs';
+import {getWorkExperience, postWorkExperience, updateWorkExperience, deleteWorkExperience} from './db.mjs';
 import {getAllUserLanguages, postUserLanguage, updateUserLanguage, deleteUserLanguage} from './db.mjs';
 import { getAllJobListings, getJobListingById} from './db.mjs';
 import {getJobSkillsByJobId} from './db.mjs';
@@ -279,45 +279,34 @@ app.delete('/user_industries/:user_industryid', async (req, res) => {
 });
 
 //work_experience
+
 app.get('/user_work_experience/:userid', async (req, res) => {
   const { userid } = req.params;
 
   try {
-    const workExperience = await getAllWorkExperience(userid);
+    const workExperience = await getWorkExperience(userid);
 
     res.status(200).json({
       message: 'Work experience retrieved successfully',
-      work_experience: workExperience
+      workExperience: workExperience
     });
   } catch (error) {
     console.error("Error retrieving user's work experience", error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 app.post('/user_work_experience/:userid', async (req, res) => {
   const { userid } = req.params;
-  const {
-    job_title,
-    companyname,
-    currently_working,
-    location,
-    start_date,
-    end_date,
-    short_description
-  } = req.body;
+  const fields = req.body;
 
-  // Check if required fields are missing
-  if (!job_title || !companyname || !location || !start_date || !short_description) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
 
   try {
-    await postWorkExperience(userid, job_title, companyname, currently_working, location, start_date, end_date, short_description);
+    await postWorkExperience(userid, fields);
 
     res.status(201).json({
       message: 'Work experience added successfully to user',
-      userid: userid,
-      job_title: job_title
+      workExperience : fields
     });
   } catch (error) {
     console.error("Error on adding work experience to user", error);
@@ -363,6 +352,7 @@ app.delete('/user_work_experience/:experience_id', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 //user_language
 
 app.get('/user_languages/:userid', async (req, res) => {

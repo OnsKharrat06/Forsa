@@ -4,7 +4,7 @@ import mysql from 'mysql2';
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'MindYourBusiness',
     database: 'fursadashs1',
 }).promise()
 
@@ -281,7 +281,7 @@ export async function deleteUserIndustry(user_industryid) {
 }
 
 //get work_experience
-export async function getAllWorkExperience(userid) {
+export async function getWorkExperience(userid) {
   try {
     const [rows] = await pool.query('SELECT * FROM work_experience WHERE userid = ?', [userid]);
     return rows;
@@ -291,14 +291,32 @@ export async function getAllWorkExperience(userid) {
   }
 }
 //post work_experience
-export async function postWorkExperience(userid, job_title, companyname, currently_working, location, start_date, end_date, short_description) {
+
+export async function postWorkExperience(userid, fields) {
+  
   try {
-    const result = await pool.query('INSERT INTO work_experience (userid, job_title, companyname, currently_working, location, start_date, end_date, short_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [userid, job_title, companyname, currently_working, location, start_date, end_date, short_description]);
+    const setClause = [];
+    const values = [];
+  
+    for (const [key, value] of Object.entries(fields)) {
+      setClause.push(`${key}`);
+      values.push(value);
+    }
+  
+    if (!setClause.length) {
+      throw new Error("No fields provided for update");
+    }
+    setClause.push("userid");
+    values.push(userid); 
+
+
+    const result = await pool.query(`INSERT INTO work_experience (${setClause.join(', ')}) VALUES(${setClause.map(e => "?").join(', ')})`, values);
     return result;
   } catch (error) {
     console.error("Error adding work experience to user", error);
     throw error;
   }
+  
 }
 //update work_experience
 export async function updateWorkExperience(experience_id, job_title, companyname, currently_working, location, start_date, end_date, short_description) {
