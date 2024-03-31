@@ -99,11 +99,12 @@ const ProfileScreen = () => {
     useEffect(() => {
         getAllSkills();
         getAllLanguages();
+        getAllEducations();
     }, []);
 
     const getAllSkills = async () => {
         try{
-        const {data:{skills}} = await axios.get('http://192.168.167.43:8000/user_skills/9');
+        const {data:{skills}} = await axios.get('http://192.168.221.43:8000/user_skills/9');
         console.log(skills);
         const allSkills = skills.map(({skill, skill_type,user_skill_id,...rest})=>({name: skill, skillType: skill_type, skillID: user_skill_id}));
         setSoftSkills(allSkills.filter(elm => elm.skillType == "soft"));
@@ -117,13 +118,33 @@ const ProfileScreen = () => {
 
     const getAllLanguages = async () => {
         try {
-            const {data:{languages}} = await axios.get('http://192.168.167.43:8000/user_languages/9');
+            const {data:{languages}} = await axios.get('http://192.168.221.43:8000/user_languages/9');
             console.log(languages);
             const allLanguages = languages.map(({language, proficiency, user_language_id,...rest})=>({name: language, proficiency, languageID: user_language_id}));
             setLanguages(allLanguages);
 
         } catch (error) {
             console.error("error getting languages:", error);
+        }
+    }
+
+    const getAllEducations = async () => {
+        try {
+            const {data:{educations}} = await axios.get('http://192.168.221.43:8000/education/9');
+            console.log(educations);
+            const allEducations = educations.map(({ education_id, school_name, degree, field_of_study, start_date, end_date, grade,...rest }) => ({
+                educationID: education_id,
+                schoolName: school_name,
+                degree: degree,
+                fieldOfStudies: field_of_study,
+                startDate: start_date,
+                endDate: end_date,
+                grade: grade
+            }));
+            setEducation(allEducations);
+
+        } catch (error) {
+            console.error("error education", error);
         }
     }
 
@@ -158,21 +179,18 @@ const ProfileScreen = () => {
         setShowBioModal(false);
     };
 
-    const handleAddEducation = () => {
+    const handleAddEducation = async () => {
         if (schoolName.trim() === '' || degree.trim() === '' || fieldOfStudies.trim() === '') {
             alert("Please fill in all required fields.");
             return;
         }
 
-        const newEducation = {
-            schoolName,
-            degree,
-            fieldOfStudies,
-            startDate: startDate || null,
-            endDate: endDate || null,
-            grade,
-        };
-        setEducation([...education, newEducation]);
+        try {
+            await axios.post("http://192.168.221.43:8000/education/9", { school_name: schoolName, degree, field_of_study: fieldOfStudies, start_date: startDate, end_date: endDate, grade});
+            getAllEducations();
+        } catch (error) {
+            console.error("Error adding education:", error);
+        }
         setShowEducationModal(false);
         // Reset form fields
         setSchoolName('');
@@ -184,10 +202,13 @@ const ProfileScreen = () => {
     };
 
 
-    const handleDeleteEducation = (index) => {
-        const updatedEducation = [...education];
-        updatedEducation.splice(index, 1);
-        setEducation(updatedEducation);
+    const handleDeleteEducation = async (educationID) => {
+        try {
+            await axios.delete(`http://192.168.221.43:8000/education/${educationID}`);
+            await getAllEducations();
+        } catch (error) {
+            
+        }
     };
 
     const handleEducationModalClose = () => {
@@ -225,6 +246,7 @@ const ProfileScreen = () => {
         updatedWorkExperience.splice(index, 1);
         setWorkExperience(updatedWorkExperience);
     };
+    
     const handleWorkExperienceModalClose = () => {
         setShowWorkExperienceModal(false);
     };
@@ -486,7 +508,7 @@ const ProfileScreen = () => {
                                         <Text>End Date: {moment(item.endDate).format("MM/DD/YYYY")}</Text>
                                         <Text>Grade: {item.grade}</Text>
                                     </View>
-                                    <TouchableOpacity onPress={() => handleDeleteEducation(index)}>
+                                    <TouchableOpacity onPress={() => handleDeleteEducation(item.educationID)}>
                                         <Ionicons name="trash" size={24} color="black" />
                                     </TouchableOpacity>
                                 </View>
