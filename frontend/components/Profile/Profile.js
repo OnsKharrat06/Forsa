@@ -102,7 +102,7 @@ const ProfileScreen = () => {
 
     const getAllSkills = async () => {
         try{
-        const {data:{skills}} = await axios.get('http://192.168.146.43:8000/user_skills/9');
+        const {data:{skills}} = await axios.get('http://192.168.167.43:8000/user_skills/9');
         console.log(skills);
         const allSkills = skills.map(({skill, skill_type,user_skill_id,...rest})=>({name: skill, skillType: skill_type, skillID: user_skill_id}));
         setSoftSkills(allSkills.filter(elm => elm.skillType == "soft"));
@@ -207,7 +207,7 @@ const ProfileScreen = () => {
 
     const handleAddHardSkill = async () => {
         try {
-            await axios.post("http://192.168.146.43:8000/user_skills/9", {skills:hardselectedSkills.map((elm)=>({skill:elm, skill_type: "hard"}))});
+            await axios.post("http://192.168.167.43:8000/user_skills/9", {skills:hardselectedSkills.map((elm)=>({skill:elm, skill_type: "hard"}))});
             await getAllSkills();
         } catch (error) {
             
@@ -216,11 +216,13 @@ const ProfileScreen = () => {
         setSelectedHardSkills([]);
     };
 
-    const handleAddSoftSkill = () => {
-        softselectedSkills.forEach((selectedSkill) => {
-            const newSkill = { name: selectedSkill };
-            setSoftSkills((prevSkills) => [...prevSkills, newSkill]);
-        });
+    const handleAddSoftSkill = async () => {
+        try {
+            await axios.post("http://192.168.167.43:8000/user_skills/9", {skills:softselectedSkills.map((elm)=>({skill:elm, skill_type: "soft"}))});
+            await getAllSkills();
+        } catch (error) {
+            
+        }
         setShowSoftSkillModal(false);
         setSelectedSoftSkills([]);
     };
@@ -228,7 +230,7 @@ const ProfileScreen = () => {
 
     const handleDeleteSkill = async (skillID) => {
         try {
-            await axios.delete(`http://192.168.146.43:8000/user_skills/${skillID}`);
+            await axios.delete(`http://192.168.167.43:8000/user_skills/${skillID}`);
             await getAllSkills();
         } catch (error) {
             
