@@ -15,6 +15,7 @@ const ProfileScreen = () => {
     const [showBioModal, setShowBioModal] = useState(false);
     const [selectedBioIndex, setSelectedBioIndex] = useState(null);
     const [bio, setBio] = useState('');
+    const [contactInfo, setContactInfo] = useState('');
 
     const [showEducationModal, setShowEducationModal] = useState(false);
     const [education, setEducation] = useState([]);
@@ -28,8 +29,8 @@ const ProfileScreen = () => {
 
     const [showContactModal, setShowContactModal] = useState(false);
     const [selectedContactIndex, setSelectedContactIndex] = useState(null);
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [linkedinURL, setlinkedinURL] = useState('');
+    const [phone, setPhone] = useState('');
+    const [linkedinurl, setlinkedinUrl] = useState('');
     const [email, setEmail] = useState('');
 
     const [workExperience, setWorkExperience] = useState([]);
@@ -58,7 +59,7 @@ const ProfileScreen = () => {
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
     const [loadingBio, setLoadingBio] = useState(true);
-
+    const [LoadingContactInfo, setLoadingContactInfo] = useState(true);
     const toggleDatepicker = () => {
         setShowPicker(!showPicker);
     };
@@ -105,6 +106,7 @@ const ProfileScreen = () => {
         getAllEducations();
         getAllWorkExperience();
         getUserBio();
+        getUserContactInfo();
     }, []);
 
     const getUserBio = async () => {
@@ -118,7 +120,19 @@ const ProfileScreen = () => {
             
         }
     };
-
+    const getUserContactInfo = async () => {
+        try {
+            const response = await axios.get(`http://192.168.1.21:8000/users/contactinfo/5`);
+            const { linkedinurl, phone, email } = response.data;
+            setEmail(email);
+            setPhone(phone);
+            setlinkedinUrl(linkedinurl);
+            setLoadingContactInfo(false);
+        } catch (error) {
+            console.error("Error fetching user contact info:", error);
+            
+        }
+    };
     const getAllSkills = async () => {
         try{
         const {data:{skills}} = await axios.get('http://192.168.1.21:8000/user_skills/9');
@@ -184,14 +198,26 @@ const ProfileScreen = () => {
         }
     }
     const handleContactIconPress = () => {
+        getUserContactInfo();
         setShowContactModal(true);
     };
 
-    const handleSaveContactInfo = () => {
-        // Save email and phone number to backend
-        // Implement your logic here
-        setShowContactModal(false);
-    };
+    const handleSaveContactInfo = async () => {
+        try {
+          const response = await axios.put(`http://192.168.1.21:8000/users/5`, {
+            email,
+            phone,
+            linkedinurl
+          });
+          console.log(response.data); // Log the response from the server
+          setShowContactModal(false);
+          // Assuming you want to update the state with new values after successful update
+         
+        } catch (error) {
+          console.error("Error updating contact information:", error);
+          // Handle error here
+        }
+      };
 
     const handleModalClose = () => {
         setSelectedContactIndex(null);
@@ -465,15 +491,15 @@ const ProfileScreen = () => {
                                 placeholderTextColor="gray"
                             />
                             <TextInput
-                                value={phoneNumber}
-                                onChangeText={setPhoneNumber}
+                                value={phone}
+                                onChangeText={setPhone}
                                 placeholder="Phone Number"
                                 style={styles.input}
                                 placeholderTextColor="gray"
                             />
                             <TextInput
-                                value={linkedinURL}
-                                onChangeText={setlinkedinURL}
+                                value={linkedinurl}
+                                onChangeText={setlinkedinUrl}
                                 placeholder="LinkedIn URL"
                                 style={styles.input}
                                 placeholderTextColor="gray"
