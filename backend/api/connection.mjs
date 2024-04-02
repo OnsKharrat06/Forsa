@@ -176,6 +176,30 @@ app.get('/users/bio/:id', async (req, res) => {
     res.status(500).json({ error: 'Error on getting user bio' });
   }
 });
+app.get('/users/contactinfo/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    const user = await getUserByID(id);
+    if (user) {
+      // Assuming 'user' object has a 'bio' property
+      // Extract bio from the user object
+      const linkedinurl = user.linkedinurl;
+      const phone = user.phone;
+      const email = user.email;
+      res.status(200).json({
+        message: 'User bio found',
+        linkedinurl:linkedinurl,
+        phone:phone,
+        email:email
+      });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error("Error on getting user bio:", error);
+    res.status(500).json({ error: 'Error on getting user bio' });
+  }
+});
 //matchings per user
 app.get('/matching/:userid', async (req, res) => {
   const { userid } = req.params;
