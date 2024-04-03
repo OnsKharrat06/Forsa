@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        marginBottom: 60
+        marginBottom: 60,
     },
     coverPhotoContainer: {
         marginBottom: 20,
@@ -37,6 +37,9 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
+    contactIcon: {
+        marginRight: 11, 
+    },    
     editIcon: {
         position: 'absolute',
         bottom: 5,
@@ -52,6 +55,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         marginBottom: 10,
+        marginLeft: 11,
     },
     infoText: {
         fontSize: 16,
@@ -63,21 +67,25 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: '#F1F0EC', // Add background color of contact information card  here
         borderRadius: 10,
+        borderWidth: 1, // Add border width
+        borderColor: '#2F704D', // Add border color
     },
     modalHeaderText: {
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 20,
+        color:'#2F704D',
     },
     input: {
         width: '80%',
         borderWidth: 1,
-        borderColor: COLORS.primary,
+        borderColor: '#2F704D', // Update border color
         borderRadius: 5,
         padding: 10,
         marginBottom: 20,
+        backgroundColor: 'transparent', // Make background transparent
         color: COLORS.primary,
     },
     closeButton: {
@@ -92,7 +100,9 @@ const styles = StyleSheet.create({
     },
     section: {
         marginBottom: 20,
-        backgroundColor: '#fff',
+        backgroundColor: 'transparent', // Make background transparent
+        borderWidth: 1, // Add border width
+        borderColor: '#2F704D', // Set border color
         padding: 10,
         borderRadius: 5,
     },
@@ -101,11 +111,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         marginBottom: 10,
+        paddingBottom: 5, // Add padding below the border
     },
     sectionTitle: {
         fontSize: 18,
         fontWeight: 'bold',
         marginRight: 10,
+        color: '#2F704D', // Set text color to match border
     },
     saveButton: {
         alignItems: 'center',
@@ -114,11 +126,11 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.tertiary,
         padding: 10,
         borderRadius: 5,
-        alignSelf: 'flex-end',
+        width: 130, // Set desired width
+        height: 40, // Set desired height
     },
     saveButtonText: {
         color: 'white',
-        fontWeight: 'bold',
     },
     modalHeader: {
         borderBottomWidth: 1,

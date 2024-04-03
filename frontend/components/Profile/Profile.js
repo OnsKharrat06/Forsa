@@ -468,11 +468,11 @@ const ProfileScreen = () => {
                         <View>
                             <Text style={styles.infoText}>Ons Kharrat</Text>
                             <Text style={styles.infoText}>Software Engineer</Text>
-                            <Text style={styles.infoText}>Tunisia,Tunis</Text>
+                            <Text style={styles.infoText}>Tunisia, Tunis</Text>
                         </View>
                         {/* Contact Icon */}
                         <TouchableOpacity onPress={handleContactIconPress} style={styles.contactIcon}>
-                            <Ionicons name="mail" size={24} color="black" />
+                            <Ionicons name="mail" size={24} color="#2F704D" />
                         </TouchableOpacity>
                     </View>
 
@@ -480,7 +480,7 @@ const ProfileScreen = () => {
                     <Modal visible={showContactModal} animationType="slide">
                         <View style={styles.modalContainer}>
                             <TouchableOpacity onPress={handleModalClose} style={styles.closeButton}>
-                                <Ionicons name="close" size={24} color="black" />
+                                <Ionicons name="close" size={24} color="#2F704D" />
                             </TouchableOpacity>
                             <Text style={styles.modalHeaderText}>Contact Information</Text>
                             <TextInput
@@ -519,7 +519,7 @@ const ProfileScreen = () => {
                         <View style={styles.sectionHeader}>
                             <Text style={styles.sectionTitle}>Bio</Text>
                             <TouchableOpacity onPress={handleEditBio}>
-                                <Ionicons name="create" size={24} color="black" />
+                                <Ionicons name="create" size={24} color="#2F704D" />
                             </TouchableOpacity>
                         </View>
                         {/* Bio Text */}
@@ -533,7 +533,7 @@ const ProfileScreen = () => {
                     <Modal visible={showBioModal} animationType="slide">
                         <View style={styles.modalContainer}>
                             <TouchableOpacity onPress={handleBioModalClose} style={styles.closeButton}>
-                                <Ionicons name="close" size={24} color="black" />
+                                <Ionicons name="close" size={24} color="#2F704D" />
                             </TouchableOpacity>
                             <Text style={styles.modalHeaderText}>Edit Bio</Text>
                             <TextInput
@@ -557,7 +557,7 @@ const ProfileScreen = () => {
                         <View style={styles.sectionHeader}>
                             <Text style={styles.sectionTitle}>Education</Text>
                             <TouchableOpacity onPress={() => setShowEducationModal(true)}>
-                                <Ionicons name="add-circle" size={24} color="black" />
+                                <Ionicons name="add-circle" size={24} color="#2F704D" />
                             </TouchableOpacity>
                         </View>
                         {/* Education List */}
@@ -573,7 +573,7 @@ const ProfileScreen = () => {
                                         <Text>Grade: {item.grade}</Text>
                                     </View>
                                     <TouchableOpacity onPress={() => handleDeleteEducation(item.educationID)}>
-                                        <Ionicons name="trash" size={24} color="black" />
+                                        <Ionicons name="trash" size={24} color="#2F704D" />
                                     </TouchableOpacity>
                                 </View>
                             ))}
@@ -584,7 +584,7 @@ const ProfileScreen = () => {
                     <Modal visible={showEducationModal} animationType="slide">
                         <View style={styles.modalContainer}>
                             <TouchableOpacity onPress={handleEducationModalClose} style={styles.closeButton}>
-                                <Ionicons name="close" size={24} color="black" />
+                                <Ionicons name="close" size={24} color="#2F704D" />
                             </TouchableOpacity>
                             <Text style={styles.modalHeaderText}>{selectedEducationIndex !== null ? 'Edit Education' : 'Add Education'}</Text>
                             <TextInput
@@ -706,7 +706,7 @@ const ProfileScreen = () => {
                         <View style={styles.sectionHeader}>
                             <Text style={styles.sectionTitle}>Work Experience</Text>
                             <TouchableOpacity onPress={() => setShowWorkExperienceModal(true)}>
-                                <Ionicons name="add-circle" size={24} color="black" />
+                                <Ionicons name="add-circle" size={24} color="#2F704D" />
                             </TouchableOpacity>
                         </View>
                         {/* Work Experience List */}
@@ -722,7 +722,7 @@ const ProfileScreen = () => {
                                     </View>
 
                                     <TouchableOpacity onPress={() => handleDeleteWorkExperience(item.workExperienceID)}>
-                                        <Ionicons name="trash" size={24} color="black" />
+                                        <Ionicons name="trash" size={24} color="#2F704D" />
                                     </TouchableOpacity>
 
                                     <View style={styles.separator}></View>
@@ -735,7 +735,7 @@ const ProfileScreen = () => {
                     <Modal visible={showWorkExperienceModal} animationType="slide">
                         <View style={styles.modalContainer}>
                             <TouchableOpacity onPress={handleWorkExperienceModalClose} style={styles.closeButton}>
-                                <Ionicons name="close" size={24} color="black" />
+                                <Ionicons name="close" size={24} color="#2F704D" />
                             </TouchableOpacity>
                             <Text style={styles.modalHeaderText}>{selectedWorkExperienceIndex !== null ? 'Edit Work Experience' : 'Add Work Experience'}</Text>
                             <TextInput
@@ -857,7 +857,7 @@ const ProfileScreen = () => {
                             <View style={styles.sectionHeader}>
                                 <Text style={styles.sectionTitle}>Hard Skills</Text>
                                 <TouchableOpacity onPress={handleShowHardSkillModal}>
-                                    <Ionicons name="add-circle" size={24} color="black" />
+                                    <Ionicons name="add-circle" size={24} color="#2F704D" />
                                 </TouchableOpacity>
                             </View>
                             <ScrollView>
@@ -868,7 +868,7 @@ const ProfileScreen = () => {
                                             <Text>{skill.name}</Text>
                                         </View>
                                         <TouchableOpacity onPress={() => handleDeleteSkill(skill.skillID)}>
-                                            <Ionicons name="trash" size={24} color="black" />
+                                            <Ionicons name="trash" size={24} color="#2F704D" />
                                         </TouchableOpacity>
                                     </View>
                                 ))}
@@ -884,7 +884,7 @@ const ProfileScreen = () => {
                             <View style={styles.sectionHeader}>
                                 <Text style={styles.sectionTitle}>Soft Skills</Text>
                                 <TouchableOpacity onPress={handleShowSoftSkillModal}>
-                                    <Ionicons name="add-circle" size={24} color="black" />
+                                    <Ionicons name="add-circle" size={24} color="#2F704D" />
                                 </TouchableOpacity>
                             </View>
                             <ScrollView>
@@ -895,7 +895,7 @@ const ProfileScreen = () => {
                                             <Text>{skill.name}</Text>
                                         </View>
                                         <TouchableOpacity onPress={() => handleDeleteSkill(skill.skillID)}>
-                                            <Ionicons name="trash" size={24} color="black" />
+                                            <Ionicons name="trash" size={24} color="#2F704D" />
                                         </TouchableOpacity>
                                     </View>
                                 ))}
@@ -907,7 +907,7 @@ const ProfileScreen = () => {
                     <Modal visible={showHardSkillModal} animationType="slide">
                         <View style={styles.modalContainer}>
                             <TouchableOpacity onPress={handleHardSkillModalClose} style={styles.closeButton}>
-                                <Ionicons name="close" size={24} color="black" />
+                                <Ionicons name="close" size={24} color="#2F704D" />
                             </TouchableOpacity>
                             <Text style={styles.modalHeaderText}>Add Hard Skill</Text>
                             <MultipleSelectList
@@ -931,7 +931,7 @@ const ProfileScreen = () => {
                     <Modal visible={showSoftSkillModal} animationType="slide">
                         <View style={styles.modalContainer}>
                             <TouchableOpacity onPress={handleSoftSkillModalClose} style={styles.closeButton}>
-                                <Ionicons name="close" size={24} color="black" />
+                                <Ionicons name="close" size={24} color="#2F704D" />
                             </TouchableOpacity>
                             <Text style={styles.modalHeaderText}>Add Soft Skill</Text>
                             <MultipleSelectList
@@ -958,7 +958,7 @@ const ProfileScreen = () => {
                         <View style={styles.sectionHeader}>
                             <Text style={styles.sectionTitle}>Languages</Text>
                             <TouchableOpacity onPress={() => setShowLanguageModal(true)}>
-                                <Ionicons name="add-circle" size={24} color="black" />
+                                <Ionicons name="add-circle" size={24} color="#2F704D" />
                             </TouchableOpacity>
                         </View>
                         <ScrollView>
@@ -968,7 +968,7 @@ const ProfileScreen = () => {
                                         <Text>{language.name} : {language.proficiency}</Text>
                                     </View>
                                     <TouchableOpacity onPress={() => handleDeleteLanguage(language.languageID)}>
-                                        <Ionicons name="trash" size={24} color="black" />
+                                        <Ionicons name="trash" size={24} color="#2F704D" />
                                     </TouchableOpacity>
                                 </View>
                             ))}
@@ -978,7 +978,7 @@ const ProfileScreen = () => {
                     <Modal visible={showLanguageModal} animationType="slide">
                         <View style={styles.modalContainer}>
                             <TouchableOpacity onPress={handleLanguageModalClose} style={styles.closeButton}>
-                                <Ionicons name="close" size={24} color="black" />
+                                <Ionicons name="close" size={24} color="#2F704D" />
                             </TouchableOpacity>
                             <Text style={styles.modalHeaderText}>Add Language</Text>
                             <TextInput
