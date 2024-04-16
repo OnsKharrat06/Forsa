@@ -7,36 +7,63 @@ const styles = StyleSheet.create({
         padding: 20,
         marginBottom: 60,
     },
-    coverPhotoContainer: {
-        marginBottom: 20,
-    },
-    coverPhoto: {
-        width: '100%',
-        height: 200,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    profilePhotoContainer: {
-        position: 'absolute',
-        bottom: -60,
-        alignSelf: 'center',
-        zIndex: 1,
-    },
-    profilePhoto: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-        backgroundColor: 'white',
-        borderWidth: 2,
-        borderColor: 'white',
-        justifyContent: 'center',
-        alignItems: 'center',
-        overflow: 'hidden',
+    // coverPhotoContainer: {
+    //     marginBottom: 20,
+    // },
+    // coverPhoto: {
+    //     width: '100%',
+    //     height: 200,
+    //     justifyContent: 'center',
+    //     alignItems: 'center',
+    // },
+    // profilePhotoContainer: {
+    //     position: 'absolute',
+    //     bottom: -60,
+    //     alignSelf: 'center',
+    //     zIndex: 1,
+    // },
+    // profilePhoto: {
+    //     width: 120,
+    //     height: 120,
+    //     borderRadius: 60,
+    //     backgroundColor: 'white',
+    //     borderWidth: 2,
+    //     borderColor: 'white',
+    //     justifyContent: 'center',
+    //     alignItems: 'center',
+    //     overflow: 'hidden',
+    // },
+    // profileImage: {
+    //     width: '100%',
+    //     height: '100%',
+    // },
+    profileCard: {
+        backgroundColor: '#F1F0EC',
+        borderWidth: 1,
+        borderColor: '#2F704D',
+        borderRadius: 10,
+        padding: 20,
+        
     },
     profileImage: {
-        width: '100%',
-        height: '100%',
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        marginRight: 15,
     },
+    nameText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 5, // Adds 5 units of spacing below the name
+      },
+    emailText: {
+        fontSize: 14,
+        color: 'gray',
+    },
+    userInfo: {
+        alignItems: 'center', // Center text within the userInfo view
+    },
+    
     contactIcon: {
         marginRight: 11, 
     },    
@@ -117,6 +144,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginRight: 10,
+        alignSelf: 'flex-start',
         color: '#2F704D', // Set text color to match border
     },
     saveButton: {
