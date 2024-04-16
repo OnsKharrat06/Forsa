@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useNavigation,  getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { Text, View, Dimensions, Image } from "react-native";
 import Home from "../../home/Home";
 // import Profile from "../../screens/Profile";
@@ -16,9 +17,17 @@ import Form from "../../Form-cv/CreateCV";
 
 const Tab = createBottomTabNavigator();
 
-export const BottomTabNavigator = () => {
+export const BottomTabNavigator = ({navigation, route}) => {
   const [maxWidth, setMaxWidth] = useState(Dimensions.get("window").width);
   const returnpathDown = getPathDown(maxWidth, 60, 50);
+
+  useEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    const headerTitle = routeName === "Home" ? "Home" : routeName || "Home";
+
+    navigation.setOptions({ headerTitle });
+  }, [navigation, route]);
+
   return (
     <Tab.Navigator
       safeAreaInsets={{ bottom: 0, top: 0 }}

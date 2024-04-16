@@ -22,7 +22,7 @@ export default function App() {
     <Provider theme={theme}>
      <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Home"
+          initialRouteName="DrawNavigation"
           screenOptions={{
             headerShown: false,
           }}
@@ -30,10 +30,8 @@ export default function App() {
           <Stack.Screen name="StartScreen" component={StartScreen} />
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-          {/* <Stack.Screen name="Dashboard" component={Dashboard} /> */}
           <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
-          <Stack.Screen name="Home" component={DrawNavigation} />
-          <Stack.Screen name="CreateCV" component={Form} />
+          <Stack.Screen name="DrawNavigation" component={DrawNavigation} />
           
         </Stack.Navigator>
       </NavigationContainer>
