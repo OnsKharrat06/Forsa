@@ -6,6 +6,7 @@ import { COLORS, images, SIZES, FONT } from "../../constants";
 import Welcome from "./welcome/Welcome";
 import ScreenHeaderBtn from "../header/ScreenHeaderBtn";
 import { StyleSheet } from "react-native";
+import JobSearch from "../Jobs/JobSeach";
 
 
 const Home = ({ navigation }) => {
@@ -30,8 +31,7 @@ const Home = ({ navigation }) => {
             }}
           />
 
-          {/* <Popularjobs />
-            <Nearbyjobs /> */}
+          <JobSearch/>
         </View>
       </ScrollView>
     </ImageBackground>
