@@ -34,8 +34,7 @@ export default function App() {
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
           <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
-          <Stack.Screen name="Home" component={DrawNavigation} />
-          <Stack.Screen name="CreateCV" component={Form} />
+          <Stack.Screen name="DrawNavigation" component={DrawNavigation} />
           <Stack.Screen name="JobSearch" component={JobSearch} />
           <Stack.Screen name="JobDetails" component={JobDetails} />
           
