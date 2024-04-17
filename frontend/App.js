@@ -14,6 +14,9 @@ import Home from "./components/home/Home";
 import { BottomTabNavigator } from './components/navigator/tabbar/tabnavication'
 import DrawNavigation from "./components/navigator/drawernav/DrawerNavigator.js";
 import Form from "./components/Form-cv/CreateCV.js";
+import JobDetails from "./components/jobdetails/JobDetails.js";
+import JobCard from "./components/Jobs/JobCard.js";
+import JobSearch from "./components/Jobs/JobSeach.js";
 
 const Stack = createStackNavigator();
 
@@ -34,6 +37,8 @@ export default function App() {
           <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
           <Stack.Screen name="Home" component={DrawNavigation} />
           <Stack.Screen name="CreateCV" component={Form} />
+          <Stack.Screen name="JobSearch" component={JobSearch} />
+          <Stack.Screen name="JobDetails" component={JobDetails} />
           
         </Stack.Navigator>
       </NavigationContainer>

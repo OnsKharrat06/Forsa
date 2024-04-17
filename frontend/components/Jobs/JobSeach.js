@@ -91,36 +91,9 @@ const JobSearch = () => {
     <View>
       <FlatList
         data={searchResult}
-        renderItem={({ item }) => <JobCard job={item} />}
+        renderItem={({ item }) => <JobCard job={item}/>}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ padding: SIZES.medium, rowGap: SIZES.medium }}
-        // // ListFooterComponent={() => (
-        // //   <View style={styles.footerContainer}>
-        // //     <TouchableOpacity
-        // //       style={styles.paginationButton}
-        // //       //   onPress={() => handlePagination("left")}
-        // //     >
-        // //       <Image
-        // //         source={icons.chevronLeft}
-        // //         style={styles.paginationImage}
-        // //         resizeMode="contain"
-        // //       />
-        // //     </TouchableOpacity>
-        // //     <View style={styles.paginationTextBox}>
-        // //       <Text style={styles.paginationText}>page one</Text>
-        // //     </View>
-        // //     <TouchableOpacity
-        // //       style={styles.paginationButton}
-        // //       //   onPress={() => handlePagination("right")}
-        // //     >
-        // //       <Image
-        // //         source={icons.chevronRight}
-        // //         style={styles.paginationImage}
-        // //         resizeMode="contain"
-        // //       />
-        //     </TouchableOpacity>
-        //   </View>
-        // )}
       />
     </View>
   );

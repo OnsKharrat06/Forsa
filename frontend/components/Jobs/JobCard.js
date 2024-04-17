@@ -8,8 +8,14 @@ import {
   CardImage,
 } from "react-native-cards";
 import jobstyles from "./jobcard.styles";
+import { useNavigation } from '@react-navigation/native'
 
 const JobCard = ({ job }) => {
+    const navigation = useNavigation();
+
+    const navigate = () => {
+      navigation.navigate('JobDetails', { job: job});
+    };
   return (
     <TouchableOpacity>
       <Card style={jobstyles.container}>
@@ -18,7 +24,7 @@ const JobCard = ({ job }) => {
         <CardContent text={job.description} />
         <CardAction separator={true} inColumn={false}>
           <CardButton onPress={() => {}} title="Save" color="#2F704D" />
-          <CardButton onPress={() => {}} title="Explore" color="#2F704D" />
+          <CardButton onPress={navigate} title="Explore" color="#2F704D" />
         </CardAction>
       </Card>
     </TouchableOpacity>
