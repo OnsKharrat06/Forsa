@@ -57,7 +57,14 @@ export default function DrawNavigation() {
                 headerTintColor: 'white',
             }}
         >
-            <Drawer.Screen name="Home" component={BottomTabNavigator} />
+            <Drawer.Screen
+                name="Home"
+                component={BottomTabNavigator}
+                options={{
+                    title: 'Home',
+                    unmountOnBlur:true
+                  }}
+            />
         </Drawer.Navigator>
 
     );
