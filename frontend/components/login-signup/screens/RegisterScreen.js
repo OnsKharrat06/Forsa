@@ -15,6 +15,7 @@ import axios from 'axios';
 import { SelectList } from 'react-native-dropdown-select-list'
 import { MultipleSelectList } from 'react-native-dropdown-select-list'
 import { COLORS } from "../../../constants";
+import { setToken } from '../../../Auth';
 
 const citiesInTunisia = [
   { key: '1', value: 'Ariana' },
@@ -122,10 +123,11 @@ export default function RegisterScreen({ navigation }) {
   const [password, setPassword] = useState({ value: '', error: '' });
   const [selectedCity, setSelectedCity] = useState({ value: '', error: '' });
   const [selectedIndustry, setSelectedIndustry] = useState([]);
+  const {setUser} = useContext(userContext);
 
   const url = "http://192.168.146.43:8000/users";
 
-  const onSignUpPressed = () => {
+  const onSignUpPressed = async () => {
     const fnameError = nameValidator(fname.value);
     const lnameError = nameValidator(lname.value);
     const emailError = emailValidator(email.value);
@@ -147,15 +149,15 @@ export default function RegisterScreen({ navigation }) {
       city: selectedCity,
       industries: selectedIndustry
     };
-    console.log("User Data:", userData);
-    axios.post(url, userData)
-      .then(response => {
-        console.log(response.data);
-        navigation.navigate('LoginScreen');
-      })
-      .catch(error => {
-        console.error("Registration failed", error);
-      });
+
+    try {
+      const response = await axios.post(url, userData);
+      await setToken(response.data.token);
+      setUser(response.data.user)
+      navigation.navigate('DrawNavigation');
+    } catch (error) {
+      console.error("Registration failed", error);
+    }
   };
 
   return (

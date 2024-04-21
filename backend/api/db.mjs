@@ -4,7 +4,7 @@ import mysql from 'mysql2';
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: 'MindYourBusiness',
+    password: 'root',
     database: 'fursadashs1',
 }).promise()
 

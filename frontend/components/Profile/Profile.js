@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import {
   View,
   Text,
@@ -23,6 +23,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
 import axios from "axios";
 import { Card } from "react-native-elements";
+import { userContext } from "../../context/userContext";
 
 const ProfileScreen = () => {
   const [editMode, setEditMode] = useState(false);
@@ -76,6 +77,10 @@ const ProfileScreen = () => {
 
   const [loadingBio, setLoadingBio] = useState(true);
   const [LoadingContactInfo, setLoadingContactInfo] = useState(true);
+
+  const {user} = useContext(userContext);
+
+
   const toggleDatepicker = () => {
     setShowPicker(!showPicker);
   };
@@ -125,7 +130,7 @@ const ProfileScreen = () => {
 
   const getUserBio = async () => {
     try {
-      const response = await axios.get(`http://192.168.1.21:8000/users/bio/4`);
+      const response = await axios.get(`http://192.168.102.43:8000/users/bio/4`);
       const { bio } = response.data;
       setBio(bio);
       setLoadingBio(false);
@@ -136,7 +141,7 @@ const ProfileScreen = () => {
   const getUserContactInfo = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.1.21:8000/users/contactinfo/5`
+        `http://192.168.102.43:8000/users/contactinfo/5`
       );
       const { linkedinurl, phone, email } = response.data;
       setEmail(email);
@@ -151,7 +156,7 @@ const ProfileScreen = () => {
     try {
       const {
         data: { skills },
-      } = await axios.get("http://192.168.1.21:8000/user_skills/9");
+      } = await axios.get("http://192.168.102.43:8000/user_skills/"+user?.userid);
       console.log(skills);
       const allSkills = skills.map(
         ({ skill, skill_type, user_skill_id, ...rest }) => ({
@@ -171,7 +176,7 @@ const ProfileScreen = () => {
     try {
       const {
         data: { languages },
-      } = await axios.get("http://192.168.1.21:8000/user_languages/9");
+      } = await axios.get("http://192.168.102.43:8000/user_languages/"+user?.userid);
       console.log(languages);
       const allLanguages = languages.map(
         ({ language, proficiency, user_language_id, ...rest }) => ({
@@ -190,7 +195,7 @@ const ProfileScreen = () => {
     try {
       const {
         data: { educations },
-      } = await axios.get("http://192.168.1.21:8000/education/9");
+      } = await axios.get("http://192.168.102.43:8000/education/"+user?.userid);
       console.log(educations);
       const allEducations = educations.map(
         ({
@@ -221,7 +226,7 @@ const ProfileScreen = () => {
     try {
       const {
         data: { workExperience },
-      } = await axios.get("http://192.168.1.21:8000/user_work_experience/4");
+      } = await axios.get("http://192.168.102.43:8000/user_work_experience/4");
       console.log(workExperience);
       const allWorkExperiences = workExperience.map(
         ({
@@ -255,7 +260,7 @@ const ProfileScreen = () => {
 
   const handleSaveContactInfo = async () => {
     try {
-      const response = await axios.put(`http://192.168.1.21:8000/users/5`, {
+      const response = await axios.put(`192.168.102.43:8000/users/5`, {
         email,
         phone,
         linkedinurl,
@@ -276,7 +281,7 @@ const ProfileScreen = () => {
 
   const handleSaveBio = async () => {
     try {
-      const response = await axios.put(`http://192.168.1.21:8000/users/4`, {
+      const response = await axios.put(`http://192.168.102.43:8000/users/4`, {
         bio,
       });
       console.log(response.data); // Log the response from the server
@@ -389,7 +394,7 @@ const ProfileScreen = () => {
     }
 
     try {
-      await axios.post("http://192.168.1.21:8000/user_skills/9", {
+      await axios.post("http://192.168.102.43:8000/user_skills/"+user?.userid, {
         skills: hardselectedSkills.map((elm) => ({
           skill: elm,
           skill_type: "hard",
@@ -413,7 +418,7 @@ const ProfileScreen = () => {
     }
 
     try {
-      await axios.post("http://192.168.1.21:8000/user_skills/9", {
+      await axios.post("http://192.168.102.43:8000/user_skills/"+user?.userid, {
         skills: softselectedSkills.map((elm) => ({
           skill: elm,
           skill_type: "soft",
@@ -432,7 +437,7 @@ const ProfileScreen = () => {
 
   const handleDeleteSkill = async (skillID) => {
     try {
-      await axios.delete(`http://192.168.1.21:8000/user_skills/${skillID}`);
+      await axios.delete(`http://192.168.102.43:8000/user_skills/${skillID}`);
       await getAllSkills();
     } catch (error) {}
   };
@@ -509,8 +514,8 @@ const ProfileScreen = () => {
               style={styles.profileImage}
             />
             <View>
-              <Text style={styles.nameText}>Ons Kharrat</Text>
-              <Text style={styles.emailText}>ons.kharrat@example.com</Text>
+              <Text style={styles.nameText}>{user?.fname} {user?.lname}</Text>
+              <Text style={styles.emailText}>{user?.email}</Text>
             </View>
           </View>
         </Card>
