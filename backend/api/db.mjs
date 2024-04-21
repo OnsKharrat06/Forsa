@@ -384,10 +384,37 @@ export async function deleteUserLanguage(user_language_id) {
 }
 
 // get all joblistings
+
 export async function getAllJobListings() {
   try {
-    const [rows] = await pool.query('SELECT * FROM joblisting');
-    return rows;
+    const [rows] = await pool.query(`
+      SELECT joblisting.*, company.*
+      FROM joblisting
+      INNER JOIN company ON joblisting.companyid = company.companyid
+    `);
+
+    // Map the result to transform it into the desired format
+    const jobListings = rows.map(row => ({
+      id: row.jobid,
+      company_name: row.company_name,
+      industry: row.industry,
+      description: row.description,
+      city: row.city,
+      country: row.country,
+      remote: row.remote,
+      hr_email: row.hr_email,
+      hr_phone: row.hr_phone,
+      website_link: row.website_link,
+      logo_url: row.logo_url,
+      role: row.role,
+      title: row.title,
+      salary: row.salary,
+      application_deadline: row.application_deadline,
+      type: row.type,
+      experience_level: row.experience_level
+    }));
+
+    return jobListings;
   } catch (error) {
     console.error("Error fetching job listings:", error);
     throw error;
