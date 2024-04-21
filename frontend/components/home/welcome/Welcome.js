@@ -14,11 +14,14 @@ import { useRouter } from "expo-router";
 
 import styles from "./welcome.style";
 import { COLORS, icons, SIZES } from "../../../constants";
+import { useContext } from "react";
+import { userContext } from "../../../context/userContext";
 
 const Welcome = () => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const {user} = useContext(userContext);
 
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -36,7 +39,7 @@ const Welcome = () => {
         style={{ flex: 1 }}
       >
         <View style={styles.container}>
-          <Text style={styles.userName}>Hello, Ons</Text>
+          <Text style={styles.userName}>Hello, {user?.fname}</Text>
           <Text style={styles.welcomeMessage}>Find your perfect job</Text>
         </View>
 

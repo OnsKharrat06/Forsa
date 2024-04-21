@@ -19,6 +19,9 @@ import { getAllJobListings, getJobListingById} from './db.mjs';
 import {getJobSkillsByJobId} from './db.mjs';
 import { getAllSkills, postSkillToUser, updateSkill, deleteUserSkill } from './db.mjs';
 import { getEducation , postEducation, deleteEducation} from './db.mjs';
+import isAuth from './isAuth.js';
+import jwt from 'jsonwebtoken'
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -37,8 +40,12 @@ app.post('/users', async (req, res) => {
         await postIndustryToUser(userid, industry_name);
       }
     }
+    const token = jwt.sign(
+      { id: userid},
+      process.env.JWT_SECRET
+      );
     
-    res.status(201).json({ message: 'User added successfully' });
+    res.status(201).json({ message: 'User added successfully', token, user });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -55,7 +62,11 @@ app.post('/login',cors(), async (req, res) => {
       return;
     }
     if (password === user.password) {
-      res.status(200).json({ message: 'Logged in successfully' });
+      const token = jwt.sign(
+        { id: user.userid},
+        process.env.JWT_SECRET
+        );
+      res.status(200).json({ message: 'Logged in successfully', token, user});
     } else {
       res.status(401).json({ message: 'Invalid password' });
     }
@@ -65,17 +76,8 @@ app.post('/login',cors(), async (req, res) => {
   }
 });
 
-// app.get('/joblistings', async (req, res) => {
-//   try {
-//       const jobListings = await getAllJobListings();
-//       res.status(200).json(jobListings);
-//   } catch (error) {
-//       console.error(error);
-//       res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
 
-app.get('/cvs', async (req, res) => {
+app.get('/cvs',isAuth, async (req, res) => {
   try {
       const cvs = await getAllCVsWithSkills();
       res.status(200).json(cvs);
@@ -85,7 +87,7 @@ app.get('/cvs', async (req, res) => {
   }
 });
 
-app.post('/cvs', async (req, res) => {
+app.post('/cvs',isAuth, async (req, res) => {
   const { userid, education, experience, skills } = req.body;
   try {
       // Check if userid is provided
@@ -102,7 +104,7 @@ app.post('/cvs', async (req, res) => {
   }
 });
 
-app.put('/cvs/:cvID', async (req, res) => {
+app.put('/cvs/:cvID',isAuth, async (req, res) => {
   const cvID = req.params.cvID;
   const { education, experience, skills } = req.body;
   try {
@@ -114,7 +116,7 @@ app.put('/cvs/:cvID', async (req, res) => {
   }
 });
 
-app.get('/cvs/user/:userid', async (req, res) => {
+app.get('/cvs/user/:userid',isAuth, async (req, res) => {
   const userid = req.params.userid;
   try {
       const cvs = await getCVsByUserId(userid);
@@ -126,7 +128,7 @@ app.get('/cvs/user/:userid', async (req, res) => {
 });
 
 //get one user by ID
-app.get('/users/:id', async (req, res) => {
+app.get('/users/:id',isAuth, async (req, res) => {
   const id = req.params.id;
   try {
     const user = await getUserByID(id);
@@ -142,7 +144,7 @@ app.get('/users/:id', async (req, res) => {
 
 //Update user information  depending on the required data to be updated (not
 // necessarely all of the information all at once)
-app.put('/users/:id', async (req, res) => {
+app.put('/users/:id',isAuth, async (req, res) => {
   const { id } = req.params;
   const fieldsToUpdate = req.body; 
   try {
@@ -157,7 +159,7 @@ app.put('/users/:id', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-app.get('/users/bio/:id', async (req, res) => {
+app.get('/users/bio/:id',isAuth, async (req, res) => {
   const id = req.params.id;
   try {
     const user = await getUserByID(id);
@@ -176,7 +178,7 @@ app.get('/users/bio/:id', async (req, res) => {
     res.status(500).json({ error: 'Error on getting user bio' });
   }
 });
-app.get('/users/contactinfo/:id', async (req, res) => {
+app.get('/users/contactinfo/:id',isAuth, async (req, res) => {
   const id = req.params.id;
   try {
     const user = await getUserByID(id);
@@ -201,7 +203,7 @@ app.get('/users/contactinfo/:id', async (req, res) => {
   }
 });
 //matchings per user
-app.get('/matching/:userid', async (req, res) => {
+app.get('/matching/:userid',isAuth, async (req, res) => {
   const { userid } = req.params;
   try {
     const matchings = await getMatchingPerUserID(userid);
@@ -220,7 +222,7 @@ app.get('/matching/:userid', async (req, res) => {
 });
 
 //favorites per user
-app.get('/favorites/:userid', async (req, res) => {
+app.get('/favorites/:userid',isAuth, async (req, res) => {
   const { userid } = req.params;
   try {
     const favorites = await getFavoritesPerUserID(userid);
@@ -243,7 +245,7 @@ app.get('/favorites/:userid', async (req, res) => {
 
 //user_industries
 
-app.get('/user_industries/:userid',async (req, res) => {
+app.get('/user_industries/:userid',isAuth,async (req, res) => {
   const { userid } = req.params;
 
   try {
@@ -260,7 +262,7 @@ app.get('/user_industries/:userid',async (req, res) => {
 
 })
 
-app.post('/user_industries/:userid', async (req, res) => {
+app.post('/user_industries/:userid',isAuth, async (req, res) => {
   const { userid } = req.params;
   const { industry_name } = req.body;
 
@@ -282,7 +284,7 @@ app.post('/user_industries/:userid', async (req, res) => {
   }
 });
 
-app.put('/user_industries/:user_industryid', async (req, res) => {
+app.put('/user_industries/:user_industryid',isAuth, async (req, res) => {
   const { user_industryid } = req.params; 
   const { industry_name: new_industry_name } = req.body; 
 
@@ -304,7 +306,7 @@ app.put('/user_industries/:user_industryid', async (req, res) => {
   }
 });
 
-app.delete('/user_industries/:user_industryid', async (req, res) => {
+app.delete('/user_industries/:user_industryid',isAuth, async (req, res) => {
   const { user_industryid } = req.params; 
 
   try {
@@ -322,7 +324,7 @@ app.delete('/user_industries/:user_industryid', async (req, res) => {
 
 //work_experience
 
-app.get('/user_work_experience/:userid', async (req, res) => {
+app.get('/user_work_experience/:userid',isAuth, async (req, res) => {
   const { userid } = req.params;
 
   try {
@@ -338,7 +340,7 @@ app.get('/user_work_experience/:userid', async (req, res) => {
   }
 });
 
-app.post('/user_work_experience/:userid', async (req, res) => {
+app.post('/user_work_experience/:userid',isAuth, async (req, res) => {
   const { userid } = req.params;
   const fields = req.body;
 
@@ -355,7 +357,7 @@ app.post('/user_work_experience/:userid', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-app.put('/user_work_experience/:experience_id', async (req, res) => {
+app.put('/user_work_experience/:experience_id',isAuth, async (req, res) => {
   const { experience_id } = req.params; 
   const { job_title, companyname, currently_working, location, start_date, end_date, short_description } = req.body; 
 
@@ -379,7 +381,7 @@ app.put('/user_work_experience/:experience_id', async (req, res) => {
   }
 });
 
-app.delete('/user_work_experience/:experience_id', async (req, res) => {
+app.delete('/user_work_experience/:experience_id',isAuth, async (req, res) => {
   const { experience_id } = req.params;
 
   try {
@@ -397,7 +399,7 @@ app.delete('/user_work_experience/:experience_id', async (req, res) => {
 
 //user_language
 
-app.get('/user_languages/:userid', async (req, res) => {
+app.get('/user_languages/:userid',isAuth, async (req, res) => {
   const { userid } = req.params;
 
   try {
@@ -412,7 +414,7 @@ app.get('/user_languages/:userid', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-app.post('/user_languages/:userid', async (req, res) => {
+app.post('/user_languages/:userid',isAuth, async (req, res) => {
   const { userid } = req.params;
   const { language, proficiency } = req.body;
 
@@ -436,7 +438,7 @@ app.post('/user_languages/:userid', async (req, res) => {
   }
 });
 
-app.put('/user_languages/:user_language_id', async (req, res) => {
+app.put('/user_languages/:user_language_id',isAuth, async (req, res) => {
   const { user_language_id } = req.params;
   const { language, proficiency } = req.body;
 
@@ -460,7 +462,7 @@ app.put('/user_languages/:user_language_id', async (req, res) => {
   }
 });
 
-app.delete('/user_languages/:user_language_id', async (req, res) => {
+app.delete('/user_languages/:user_language_id',isAuth, async (req, res) => {
   const { user_language_id } = req.params;
 
   try {
@@ -477,7 +479,7 @@ app.delete('/user_languages/:user_language_id', async (req, res) => {
 });
 
 //joblistings
-app.get('/joblistings', async (req, res) => {
+app.get('/joblistings',isAuth, async (req, res) => {
   try {
     const jobListings = await getAllJobListings();
     res.status(200).json(jobListings);
@@ -486,7 +488,7 @@ app.get('/joblistings', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-app.get('/joblistings/:jobid', async (req, res) => {
+app.get('/joblistings/:jobid',isAuth, async (req, res) => {
   const { jobid } = req.params;
   try {
     const jobListing = await getJobListingById(jobid);
@@ -502,7 +504,7 @@ app.get('/joblistings/:jobid', async (req, res) => {
 });
 
 //job skills
-app.get('/job_skills/:jobId', async (req, res) => {
+app.get('/job_skills/:jobId',isAuth, async (req, res) => {
   const jobId = req.params.jobId;
 
   try {
@@ -521,7 +523,7 @@ app.get('/job_skills/:jobId', async (req, res) => {
 
 //user_skills
 
-app.get('/user_skills/:userid',async (req, res) => {
+app.get('/user_skills/:userid',isAuth,async (req, res) => {
   const { userid } = req.params;
 
   try {
@@ -538,7 +540,7 @@ app.get('/user_skills/:userid',async (req, res) => {
 
 })
 
-app.post('/user_skills/:userid', async (req, res) => {
+app.post('/user_skills/:userid',isAuth, async (req, res) => {
   const { userid } = req.params;
   const {skills} = req.body;
 
@@ -564,7 +566,7 @@ app.post('/user_skills/:userid', async (req, res) => {
   }
 });
 
-app.put('/user_skills/:user_skill_id', async (req, res) => {
+app.put('/user_skills/:user_skill_id',isAuth, async (req, res) => {
   const { user_skill_id } = req.params; 
   const fieldsToUpdate = req.body; 
 
@@ -583,7 +585,7 @@ app.put('/user_skills/:user_skill_id', async (req, res) => {
 });
 
 
-app.delete('/user_skills/:user_skill_id', async (req, res) => {
+app.delete('/user_skills/:user_skill_id',isAuth, async (req, res) => {
   const { user_skill_id } = req.params; 
 
   try {
@@ -600,7 +602,7 @@ app.delete('/user_skills/:user_skill_id', async (req, res) => {
 });
  //education
 
- app.get('/education/:userid',async (req, res) => {
+ app.get('/education/:userid',isAuth,async (req, res) => {
   const { userid } = req.params;
 
   try {
@@ -617,7 +619,7 @@ app.delete('/user_skills/:user_skill_id', async (req, res) => {
 
 })
 
-app.post('/education/:userid', async (req, res) => {
+app.post('/education/:userid',isAuth, async (req, res) => {
   const { userid } = req.params;
   const fields = req.body;
 
@@ -634,7 +636,7 @@ app.post('/education/:userid', async (req, res) => {
   }
 });
 
-app.delete('/education/:education_id', async (req, res) => {
+app.delete('/education/:education_id',isAuth, async (req, res) => {
   const { education_id } = req.params; 
 
   try {
@@ -648,6 +650,15 @@ app.delete('/education/:education_id', async (req, res) => {
     console.error("Error on deleting education", error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
+});
+
+app.get('/user', isAuth,async (req, res) =>{
+  console.log("user request", req.user)
+  const user = await getUserByID(req.user.id);
+  console.log("user",user);
+  res.status(200).json({
+    user
+  });
 });
 
 
