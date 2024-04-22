@@ -5,15 +5,36 @@ import { Button } from "react-native-paper";
 import { BottomTabNavigator } from "../tabbar/tabnavication";
 import { COLORS } from '../../../constants';
 import Home from '../../home/Home';
+import { useEffect } from 'react';
+import { userContext } from '../../../context/userContext';
+import { useContext } from 'react';
+import axios from 'axios';
+import { logOut } from '../../../Auth';
 const Drawer = createDrawerNavigator();
 
+const url="http://192.168.102.43:8000/user"
+
 const CustomDrawerContent = ({ navigation }) => {
-    const handleLogout = () => {
+    const {user, setUser} = useContext(userContext);
+    useEffect(()=>{
+        console.log("user",user);
+        if(user) return;
+        getUserData();
+    }
+    ,[user]);
+    const handleLogout = async () => {
+        await logOut();
+        setUser(undefined);
         navigation.reset({
             index: 0,
             routes: [{ name: 'StartScreen' }],
         });
     };
+const getUserData = async ()=>{
+    const response = await axios.get(url);
+    setUser(response.data.user);
+    console.log("response", response);
+    }
 
     return (
         <ImageBackground

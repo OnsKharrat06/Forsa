@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { TouchableOpacity, StyleSheet, View,TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../element/Background'
@@ -11,15 +11,19 @@ import { theme } from '../core/theme'
 import { emailValidator } from '../helpers/emailValidator'
 import { passwordValidator } from '../helpers/passwordValidator'
 import axios from 'axios'
+import { AsyncStorage } from 'react-native'
+import { userContext } from '../../../context/userContext'
+import { setToken } from '../../../Auth'
 //test
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
   const [error,setError]=useState();
+  const {setUser} = useContext(userContext);
 
-  const url="http://192.168.1.21:8000/login"
+  const url="http://192.168.102.43:8000/login"
 
-  const onLoginPressed = () => {
+  const onLoginPressed = async () => {
     const emailValue = email.value; 
     const passwordValue = password.value; 
 
@@ -27,12 +31,14 @@ export default function LoginScreen({ navigation }) {
       email: emailValue,
       password: passwordValue,
     };
-    axios.post(url, resultObj).then(response => {
-      navigation.navigate('Home');
-      console.log(response.data);
-    }).catch((error) => {
-        console.error("Login failed", error);
-    });
+    try {
+      const response = await axios.post(url, resultObj);
+      await setToken(response.data.token);
+      setUser(response.data.user)
+      navigation.navigate('DrawNavigation');
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
