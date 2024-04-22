@@ -109,7 +109,7 @@ export const BottomTabNavigator = ({navigation, route}) => {
       />
       <Tab.Screen
         name="Save"
-        component={Home}
+        component={Save}
         options={{
           headerShown: false,
           tabBarItemStyle: {

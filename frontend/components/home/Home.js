@@ -4,7 +4,6 @@ import { Stack, useRouter } from "expo-router";
 import { COLORS, images, SIZES, FONT } from "../../constants";
 
 import Welcome from "./welcome/Welcome";
-import ScreenHeaderBtn from "../header/ScreenHeaderBtn";
 import { StyleSheet } from "react-native";
 import JobSearch from "../Jobs/JobSeach";
 

@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet,ImageBackground } from 'react-native';
-import { COLORS } from '../../constants';
+import { View, Text, FlatList, StyleSheet, ImageBackground } from 'react-native';
 
-const Save = () => {
+
+const Save = ({ savedJobs }) => {
     return (
         <ImageBackground
             source={require("../../assets/images/bg.png")}
@@ -12,7 +12,7 @@ const Save = () => {
             <View style={styles.container}>
                 <Text>Saved Jobs</Text>
             </View>
-        </ImageBackground>
+        </ImageBackground >
     );
 };
 const styles = StyleSheet.create({
