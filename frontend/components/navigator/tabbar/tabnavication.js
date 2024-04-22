@@ -10,11 +10,10 @@ import { Svg, Path } from "react-native-svg";
 import { scale } from "react-native-size-scaling";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { COLORS } from "../../../constants";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import Profile from "../../Profile/Profile";
-import Save from "../../SavedJob/Save";
-import Form from "../../Form-cv/CreateCV";
 import Apply from "../../AppliedJob/Apply";
+import Match from "../../AI/AIMatch";
+import MatchesList from "../../AI/Matches";
 
 const Tab = createBottomTabNavigator();
 
@@ -60,7 +59,7 @@ export const BottomTabNavigator = ({navigation, route}) => {
       />
       <Tab.Screen
         name="Matches"
-        component={Save}
+        component={MatchesList}
         options={{
           headerShown: false,
           tabBarItemStyle: {
@@ -76,7 +75,7 @@ export const BottomTabNavigator = ({navigation, route}) => {
       />
       <Tab.Screen
         name="Add"
-        component={Form}
+        component={Match}
         options={{
           headerShown: false,
           unmountOnBlur: false,
@@ -109,7 +108,7 @@ export const BottomTabNavigator = ({navigation, route}) => {
         }}
       />
       <Tab.Screen
-        name="Apply"
+        name="Applied"
         component={Apply}
         options={{
           headerShown: false,

@@ -8,12 +8,8 @@ import {
   LoginScreen,
   RegisterScreen,
   ResetPasswordScreen,
-  Dashboard,
 } from "./components/login-signup/screens";
-import Home from "./components/home/Home";
-import { BottomTabNavigator } from './components/navigator/tabbar/tabnavication'
 import DrawNavigation from "./components/navigator/drawernav/DrawerNavigator.js";
-import Form from "./components/Form-cv/CreateCV.js";
 import JobDetails from "./components/jobdetails/JobDetails.js";
 import JobCard from "./components/Jobs/JobCard.js";
 import JobSearch from "./components/Jobs/JobSeach.js";
