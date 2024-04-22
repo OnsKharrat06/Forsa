@@ -24,7 +24,7 @@ import { setToken
 const Stack = createStackNavigator();
 
 export default function App() {
-  const [initialRoute, setInitialRoute] = useState("LoginScreen");
+  const [initialRoute, setInitialRoute] = useState("DrawNavigation");
   const NavigationContainerRef = createNavigationContainerRef();
   const checkSession = async () =>{
     const token = await getToken();

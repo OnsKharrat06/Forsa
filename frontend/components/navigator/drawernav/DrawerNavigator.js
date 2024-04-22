@@ -4,24 +4,25 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@rea
 import { Button } from "react-native-paper";
 import { BottomTabNavigator } from "../tabbar/tabnavication";
 import { COLORS } from '../../../constants';
-import Home from '../../home/Home';
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { useEffect } from 'react';
 import { userContext } from '../../../context/userContext';
 import { useContext } from 'react';
 import axios from 'axios';
 import { logOut } from '../../../Auth';
+import Save from '../../SavedJob/Save';
 const Drawer = createDrawerNavigator();
 
-const url="http://192.168.102.43:8000/user"
+const url = "http://192.168.102.43:8000/user"
 
 const CustomDrawerContent = ({ navigation }) => {
-    const {user, setUser} = useContext(userContext);
-    useEffect(()=>{
-        console.log("user",user);
-        if(user) return;
+    const { user, setUser } = useContext(userContext);
+    useEffect(() => {
+        console.log("user", user);
+        if (user) return;
         getUserData();
     }
-    ,[user]);
+        , [user]);
     const handleLogout = async () => {
         await logOut();
         setUser(undefined);
@@ -30,10 +31,10 @@ const CustomDrawerContent = ({ navigation }) => {
             routes: [{ name: 'StartScreen' }],
         });
     };
-const getUserData = async ()=>{
-    const response = await axios.get(url);
-    setUser(response.data.user);
-    console.log("response", response);
+    const getUserData = async () => {
+        const response = await axios.get(url);
+        setUser(response.data.user);
+        console.log("response", response);
     }
 
     return (
@@ -45,11 +46,17 @@ const getUserData = async ()=>{
             <React.Fragment>
                 <DrawerContentScrollView style={{ flex: 1 }}>
                     <DrawerItem
+                        drawerIcon={() => <Ionicons name="home-outline" size={24} />}
                         label="Home"
                         onPress={() => navigation.navigate('Home')}
                         style={{ marginBottom: 10 }}
                     />
-
+                    <DrawerItem
+                        drawerIcon={() => <Ionicons name="bookmark-outline" size={24} />}
+                        label="Save"
+                        onPress={() => navigation.navigate('Save')}
+                        style={{ marginBottom: 10 }}
+                    />
                 </DrawerContentScrollView>
                 <Button
                     mode="outlined"
@@ -83,8 +90,16 @@ export default function DrawNavigation() {
                 component={BottomTabNavigator}
                 options={{
                     title: 'Home',
-                    unmountOnBlur:true
-                  }}
+                    unmountOnBlur: true
+                }}
+            />
+            <Drawer.Screen
+                name="Save"
+                component={Save}
+                options={{
+                    title: 'Save',
+                    unmountOnBlur: true
+                }}
             />
         </Drawer.Navigator>
 

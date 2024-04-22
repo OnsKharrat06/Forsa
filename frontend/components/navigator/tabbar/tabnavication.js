@@ -14,6 +14,7 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import Profile from "../../Profile/Profile";
 import Save from "../../SavedJob/Save";
 import Form from "../../Form-cv/CreateCV";
+import Apply from "../../AppliedJob/Apply";
 
 const Tab = createBottomTabNavigator();
 
@@ -108,8 +109,8 @@ export const BottomTabNavigator = ({navigation, route}) => {
         }}
       />
       <Tab.Screen
-        name="Save"
-        component={Save}
+        name="Apply"
+        component={Apply}
         options={{
           headerShown: false,
           tabBarItemStyle: {
@@ -119,7 +120,7 @@ export const BottomTabNavigator = ({navigation, route}) => {
           tabBarIcon: () => (
             <View>
               <Ionicons
-                name="heart"
+                name="file-tray-full"
                 size={30}
                 color={COLORS.tertiary}
               />
