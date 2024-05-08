@@ -1,12 +1,13 @@
-import React, { useState,useEffect } from "react";
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, StyleSheet,Alert } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, StyleSheet, Alert } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import axios from "axios";
 
 import Tabs from './tabs/Tabs';
 import About from './about/About';
-import Company from './company/Company'
-import Contacts from './contacts/Contacts'
+import Company from './company/Company';
+import Contacts from './contacts/Contacts';
 
 import { COLORS, SIZES } from "../../constants";
 
@@ -14,40 +15,60 @@ const tabs = ["About", "Company", "Contacts"];
 
 const JobDetails = ({ job }) => {
   const route = useRoute();
-  const { id, company_name, title, description, website_link, role, salary, hr_email, hr_phone, logo_url, city, country,saved,applied, ...otherJobDetails } = route.params.job;
+  const { id, company_name, title, description, website_link, role, salary, hr_email, hr_phone, logo_url, city, country, saved, ...otherJobDetails } = route.params.job;
   const [activeTab, setActiveTab] = useState("About");
   const [isSaved, setIsSaved] = useState(saved);
-  const [isApplied, setIsApplied] = useState(applied);
+  const [isApplied, setIsApplied] = useState(false);
+
+  useEffect(() => {
+    // Fetch applied status when component mounts
+    const fetchAppliedStatus = async () => {
+      try {
+        const response = await axios.get(`http://192.168.1.21:8000/joblistings/${id}/appliedStatus`);
+        setIsApplied(response.data.applied === 1); // Update isApplied based on the fetched status
+      } catch (error) {
+        console.error('Error fetching applied status:', error);
+      }
+    };
+    const fetchSavedStatus = async () => {
+      try {
+        const savedResponse = await axios.get(`http://192.168.1.21:8000/joblistings/${id}/savedStatus`);
+        setIsSaved(savedResponse.data.saved === 1);
+      } catch (error) {
+        console.error('Error fetching saved status:', error);
+      }
+    };
+    fetchAppliedStatus();
+    fetchSavedStatus();
+  }, [id]); // Include id as dependency to re-fetch applied status when id changes
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
- 
-  const handleSave = () => {
-    const newSavedState = !isSaved;
-    
-    const updatedJob = { ...job, saved: newSavedState };
-    Alert.alert(
-      `Job ${newSavedState ? 'Saved' : 'Unsaved'}`,
-      `The job has been ${newSavedState ? 'saved' : 'unsaved'} successfully.`
-    );
-  
-    setIsSaved(newSavedState);
-    console.log(updatedJob);
+
+  const handleSave = async () => {
+    try {
+      const response = await axios.put(`http://192.168.1.21:8000/joblistings/${id}/save`);
+      console.log(response.data.message);
+      setIsSaved(prevState => !prevState); // Toggle isApplied state
+      Alert.alert("Job Saved", isSaved ? "You have saved this job." : "You have unsaved this job.");
+    } catch (error) {
+      console.error("Error applying to job:", error);
+      Alert.alert("Error", "Failed to apply for this job. Please try again later.");
+    }
   };
 
-  const handleApply = () => {
-    const newApplyState = !isApplied;
-  
-    if (newApplyState) {
-      Alert.alert("Job Applied", "You have applied for this job.");
-    } else {
-      Alert.alert("Job Unapplied", "You have unapplied for this job.");
+  const handleApply = async () => {
+    try {
+      const response = await axios.put(`http://192.168.1.21:8000/joblistings/${id}/apply`);
+      console.log(response.data.message);
+      setIsApplied(prevState => !prevState); // Toggle isApplied state
+      Alert.alert("Job Applied", isApplied ? "You have applied for this job." : "You have unapplied for this job.");
+    } catch (error) {
+      console.error("Error applying to job:", error);
+      Alert.alert("Error", "Failed to apply for this job. Please try again later.");
     }
-  
-    setIsApplied(newApplyState);
   };
-  
 
   const applyButtonTitle = isApplied ? "Applied" : "Apply";
 
@@ -57,14 +78,14 @@ const JobDetails = ({ job }) => {
         <View style={styles.headerContainer}>
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={handleApply} style={styles.applyButton}>
-            <Text style={styles.applyButtonText}>{applyButtonTitle}</Text>
+              <Text style={styles.applyButtonText}>{applyButtonTitle}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={handleSave} style={styles.heartButton}>
-            <Ionicons
-                name={ isSaved ? 'heart' : 'heart-outline'}
+              <Ionicons
+                name={isSaved ? 'heart' : 'heart-outline'}
                 size={30}
-                color={ isSaved ? COLORS.tertiary : COLORS.gray}
+                color={isSaved ? COLORS.tertiary : COLORS.gray}
               />
             </TouchableOpacity>
           </View>

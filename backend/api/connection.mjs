@@ -1,6 +1,6 @@
 import cors from 'cors';
 import express from 'express';
-
+import { getSavedStatus } from './db.mjs';
 import { postUser } from './db.mjs';
 import { getUserByEmail } from './db.mjs';
 //import { getAllJobListings }from './db.mjs';
@@ -12,8 +12,9 @@ import { getAppliedJobListings } from './db.mjs';
 import { applyToJob } from './db.mjs';
 import { savedJob } from './db.mjs';
 import { getSavedJobListings } from './db.mjs';
-import { unapplyToJob } from './db.mjs';
-import { unsavedJob } from './db.mjs';
+
+
+import { getAppliedStatus } from './db.mjs';
 // Allow requests from the Expo tunnel URL
 //test
 import { getUserByID, updateUser, getMatchingPerUserID, getFavoritesPerUserID } from './db.mjs';
@@ -494,6 +495,7 @@ app.get('/joblistings',isAuth, async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 app.get('/joblistings/applied', async (req, res) => {
   try {
     const jobListings = await getAppliedJobListings();
@@ -503,6 +505,7 @@ app.get('/joblistings/applied', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 app.put('/joblistings/:jobId/apply', async (req, res) => {
   const jobId = req.params.jobId;
 
@@ -518,21 +521,22 @@ app.put('/joblistings/:jobId/apply', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-app.put('/joblistings/:jobId/unapply', async (req, res) => {
+app.get('/joblistings/:jobId/appliedStatus', async (req, res) => {
   const jobId = req.params.jobId;
 
   try {
-    // Call the applyToJob function to update the applied field
-    await unapplyToJob(jobId);
+    // Call the getAppliedStatus function to fetch the applied status
+    const appliedStatus = await getAppliedStatus(jobId);
 
-    // Send a success response
-    res.status(200).json({ message: 'Job application updated successfully' });
+    // Send the applied status in the response
+    res.status(200).json({ applied: appliedStatus });
   } catch (error) {
     // Handle errors
-    console.error("Error applying to job:", error);
+    console.error("Error fetching applied status:", error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 app.get('/joblistings/saved', async (req, res) => {
   try {
     const jobListings = await getSavedJobListings();
@@ -557,21 +561,22 @@ app.put('/joblistings/:jobId/save', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-app.put('/joblistings/:jobId/unsave', async (req, res) => {
+app.get('/joblistings/:jobId/savedStatus', async (req, res) => {
   const jobId = req.params.jobId;
 
   try {
-    // Call the applyToJob function to update the applied field
-    await unsavedJob(jobId);
+    // Call the getAppliedStatus function to fetch the applied status
+    const savedStatus = await getSavedStatus(jobId);
 
-    // Send a success response
-    res.status(200).json({ message: 'Job application updated successfully' });
+    // Send the applied status in the response
+    res.status(200).json({ saved: savedStatus });
   } catch (error) {
     // Handle errors
-    console.error("Error applying to job:", error);
+    console.error("Error fetching applied status:", error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 app.get('/joblistings/:jobid',isAuth, async (req, res) => {
   const { jobid } = req.params;
   try {

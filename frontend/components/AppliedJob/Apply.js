@@ -3,6 +3,8 @@ import { View, Text, FlatList, StyleSheet, ImageBackground } from 'react-native'
 import JobCard from "../Jobs/JobCard";
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+
 const Apply = () => {
 
     // const AppliedJobs = [
@@ -32,21 +34,20 @@ const Apply = () => {
     // ]
     const [appliedJobs, setAppliedJobs] = useState([]);
 
-    useEffect(() => {
-        // Fetch applied jobs from the backend when the component mounts
-        const fetchAppliedJobs = async () => {
-            try {
-                const response = await axios.get("http://192.168.18.245:8000/joblistings/applied");
-                // Assuming your backend returns applied job listings in response.data
-                setAppliedJobs(response.data);
-            } catch (error) {
-                console.error('Error fetching applied jobs:', error);
-            }
-        };
-
-        fetchAppliedJobs(); // Call the fetchAppliedJobs function when the component mounts
-    }, []);
-
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchAppliedJobs = async () => {
+                try {
+                    const response = await axios.get('http://192.168.1.21:8000/joblistings/applied');
+                    setAppliedJobs(response.data);
+                } catch (error) {
+                    console.error('Error fetching applied jobs:', error);
+                }
+            };
+            fetchAppliedJobs();
+            return () => {}; // Clean-up function
+        }, [])
+    );
     return (
         <ImageBackground
             source={require('../../assets/images/bg.png')}
