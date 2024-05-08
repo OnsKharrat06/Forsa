@@ -457,43 +457,84 @@ export async function getAppliedJobListings() {
     throw error;
   }
 }
+export async function getAppliedStatus(jobId) {
+  const query = `
+    SELECT applied
+    FROM joblisting
+    WHERE jobid = ?
+  `;
+  const values = [jobId];
 
+  try {
+    const [result] = await pool.query(query, values);
+    if (result.length > 0) {
+      return result[0].applied;
+    } else {
+      throw new Error("Job listing not found");
+    }
+  } catch (error) {
+    console.error("Error fetching applied status from the database:", error);
+    throw error;
+  }
+}
+
+
+// export async function applyToJob(jobId) {
+//   const fieldsToUpdate = { applied: true }; // Set applied field to true
+//   const query = `
+//     UPDATE joblisting
+//     SET applied = ?
+//     WHERE jobid = ?
+//   `;
+//   const values = [fieldsToUpdate.applied, jobId];
+
+//   try {
+//     const [result] = await pool.query(query, values);
+//     console.log("Job application updated successfully:", result);
+//     return result;
+//   } catch (error) {
+//     console.error("Error updating job application in the database:", error);
+//     throw error;
+//   }
+// }
 export async function applyToJob(jobId) {
-  const fieldsToUpdate = { applied: true }; // Set applied field to true
-  const query = `
-    UPDATE joblisting
-    SET applied = ?
-    WHERE jobid = ?
-  `;
-  const values = [fieldsToUpdate.applied, jobId];
-
   try {
+    // Fetch the current applied status of the job
+    const query = `
+      SELECT applied
+      FROM joblisting
+      WHERE jobid = ?
+    `;
+    const values = [jobId];
     const [result] = await pool.query(query, values);
-    console.log("Job application updated successfully:", result);
-    return result;
+
+    if (result.length > 0) {
+      // Toggle the applied status
+      const currentAppliedStatus = result[0].applied;
+      const newAppliedStatus = currentAppliedStatus === 1 ? 0 : 1;
+
+      // Update the database with the new applied status
+      const updateQuery = `
+        UPDATE joblisting
+        SET applied = ?
+        WHERE jobid = ?
+      `;
+      const updateValues = [newAppliedStatus, jobId];
+
+      const [updateResult] = await pool.query(updateQuery, updateValues);
+      console.log("Job application updated successfully:", updateResult);
+      return updateResult;
+    } else {
+      throw new Error("Job listing not found");
+    }
   } catch (error) {
     console.error("Error updating job application in the database:", error);
     throw error;
   }
 }
-export async function unapplyToJob(jobId) {
-  const fieldsToUpdate = { applied: false }; // Set applied field to true
-  const query = `
-    UPDATE joblisting
-    SET applied = ?
-    WHERE jobid = ?
-  `;
-  const values = [fieldsToUpdate.applied, jobId];
 
-  try {
-    const [result] = await pool.query(query, values);
-    console.log("Job application updated successfully:", result);
-    return result;
-  } catch (error) {
-    console.error("Error updating job application in the database:", error);
-    throw error;
-  }
-}
+
+
 
 export async function getSavedJobListings() {
   try {
@@ -532,41 +573,61 @@ export async function getSavedJobListings() {
   }
 }
 export async function savedJob(jobId) {
-  const fieldsToUpdate = { saved: true }; // Set applied field to true
-  const query = `
-    UPDATE joblisting
-    SET saved = ?
-    WHERE jobid = ?
-  `;
-  const values = [fieldsToUpdate.saved, jobId];
-
   try {
+    // Fetch the current applied status of the job
+    const query = `
+      SELECT saved
+      FROM joblisting
+      WHERE jobid = ?
+    `;
+    const values = [jobId];
     const [result] = await pool.query(query, values);
-    console.log("Job application updated successfully:", result);
-    return result;
+
+    if (result.length > 0) {
+      // Toggle the applied status
+      const currentSavedStatus = result[0].saved;
+      const newSavedStatus = currentSavedStatus === 1 ? 0 : 1;
+
+      // Update the database with the new applied status
+      const updateQuery = `
+        UPDATE joblisting
+        SET saved = ?
+        WHERE jobid = ?
+      `;
+      const updateValues = [newSavedStatus, jobId];
+
+      const [updateResult] = await pool.query(updateQuery, updateValues);
+      console.log("Job application updated successfully:", updateResult);
+      return updateResult;
+    } else {
+      throw new Error("Job listing not found");
+    }
   } catch (error) {
     console.error("Error updating job application in the database:", error);
     throw error;
   }
 }
-export async function unsavedJob(jobId) {
-  const fieldsToUpdate = { saved: false }; // Set applied field to true
+export async function getSavedStatus(jobId) {
   const query = `
-    UPDATE joblisting
-    SET saved = ?
+    SELECT saved
+    FROM joblisting
     WHERE jobid = ?
   `;
-  const values = [fieldsToUpdate.saved, jobId];
+  const values = [jobId];
 
   try {
     const [result] = await pool.query(query, values);
-    console.log("Job application updated successfully:", result);
-    return result;
+    if (result.length > 0) {
+      return result[0].saved;
+    } else {
+      throw new Error("Job listing not found");
+    }
   } catch (error) {
-    console.error("Error updating job application in the database:", error);
+    console.error("Error fetching applied status from the database:", error);
     throw error;
   }
 }
+
 //get joblistings by jobid
 export async function getJobListingById(jobid) {
   try {
