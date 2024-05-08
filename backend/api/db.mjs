@@ -4,7 +4,7 @@ import mysql from 'mysql2';
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: 'root',
+    password: 'MindYourBusiness',
     database: 'fursadashs1',
 }).promise()
 
@@ -420,8 +420,153 @@ export async function getAllJobListings() {
     throw error;
   }
 }
+//applied joblistings 
+export async function getAppliedJobListings() {
+  try {
+    const [rows] = await pool.query(`
+      SELECT joblisting.*, company.*
+      FROM joblisting
+      INNER JOIN company ON joblisting.companyid = company.companyid
+      WHERE joblisting.applied = true
+    `);
 
+    // Map the result to transform it into the desired format
+    const jobListings = rows.map(row => ({
+      id: row.jobid,
+      company_name: row.company_name,
+      industry: row.industry,
+      description: row.description,
+      city: row.city,
+      country: row.country,
+      remote: row.remote,
+      hr_email: row.hr_email,
+      hr_phone: row.hr_phone,
+      website_link: row.website_link,
+      logo_url: row.logo_url,
+      role: row.role,
+      title: row.title,
+      salary: row.salary,
+      application_deadline: row.application_deadline,
+      type: row.type,
+      experience_level: row.experience_level
+    }));
 
+    return jobListings;
+  } catch (error) {
+    console.error("Error fetching job listings:", error);
+    throw error;
+  }
+}
+
+export async function applyToJob(jobId) {
+  const fieldsToUpdate = { applied: true }; // Set applied field to true
+  const query = `
+    UPDATE joblisting
+    SET applied = ?
+    WHERE jobid = ?
+  `;
+  const values = [fieldsToUpdate.applied, jobId];
+
+  try {
+    const [result] = await pool.query(query, values);
+    console.log("Job application updated successfully:", result);
+    return result;
+  } catch (error) {
+    console.error("Error updating job application in the database:", error);
+    throw error;
+  }
+}
+export async function unapplyToJob(jobId) {
+  const fieldsToUpdate = { applied: false }; // Set applied field to true
+  const query = `
+    UPDATE joblisting
+    SET applied = ?
+    WHERE jobid = ?
+  `;
+  const values = [fieldsToUpdate.applied, jobId];
+
+  try {
+    const [result] = await pool.query(query, values);
+    console.log("Job application updated successfully:", result);
+    return result;
+  } catch (error) {
+    console.error("Error updating job application in the database:", error);
+    throw error;
+  }
+}
+
+export async function getSavedJobListings() {
+  try {
+    const [rows] = await pool.query(`
+      SELECT joblisting.*, company.*
+      FROM joblisting
+      INNER JOIN company ON joblisting.companyid = company.companyid
+      WHERE joblisting.saved = true
+    `);
+
+    // Map the result to transform it into the desired format
+    const jobListings = rows.map(row => ({
+      id: row.jobid,
+      company_name: row.company_name,
+      industry: row.industry,
+      description: row.description,
+      city: row.city,
+      country: row.country,
+      remote: row.remote,
+      hr_email: row.hr_email,
+      hr_phone: row.hr_phone,
+      website_link: row.website_link,
+      logo_url: row.logo_url,
+      role: row.role,
+      title: row.title,
+      salary: row.salary,
+      application_deadline: row.application_deadline,
+      type: row.type,
+      experience_level: row.experience_level
+    }));
+
+    return jobListings;
+  } catch (error) {
+    console.error("Error fetching job listings:", error);
+    throw error;
+  }
+}
+export async function savedJob(jobId) {
+  const fieldsToUpdate = { saved: true }; // Set applied field to true
+  const query = `
+    UPDATE joblisting
+    SET saved = ?
+    WHERE jobid = ?
+  `;
+  const values = [fieldsToUpdate.saved, jobId];
+
+  try {
+    const [result] = await pool.query(query, values);
+    console.log("Job application updated successfully:", result);
+    return result;
+  } catch (error) {
+    console.error("Error updating job application in the database:", error);
+    throw error;
+  }
+}
+export async function unsavedJob(jobId) {
+  const fieldsToUpdate = { saved: false }; // Set applied field to true
+  const query = `
+    UPDATE joblisting
+    SET saved = ?
+    WHERE jobid = ?
+  `;
+  const values = [fieldsToUpdate.saved, jobId];
+
+  try {
+    const [result] = await pool.query(query, values);
+    console.log("Job application updated successfully:", result);
+    return result;
+  } catch (error) {
+    console.error("Error updating job application in the database:", error);
+    throw error;
+  }
+}
 //get joblistings by jobid
 export async function getJobListingById(jobid) {
   try {
