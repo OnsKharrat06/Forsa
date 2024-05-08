@@ -26,12 +26,19 @@ const Save = () => {
           type: "On-Site",
           description: "Develop and maintain web applications",
           experience_level: "Mid-Level",
+          saved: true,
         },
     ]
     
     // const handle = () => {
     // //     console.log(savedJobs);
     // //   };
+
+    const unsaveJob = (job) => {
+        // Logic to remove the job from saved list
+        // This logic will depend on how you are managing the saved jobs in your app
+      };
+  
 
     return (
         <ImageBackground
@@ -48,7 +55,7 @@ const Save = () => {
                 <FlatList
                     data={savedJobs}
                     renderItem={({ item }) => (
-                        <JobCard job={item} />
+                        <JobCard job={item} saveJob={unsaveJob} saved={item.saved} />
                     )}
                     keyExtractor={(item) => item.id.toString()}
                 />

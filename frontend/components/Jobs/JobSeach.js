@@ -29,6 +29,8 @@ const JobSearch = () => {
       type: "On-Site",
       description: "Develop and maintain web applications",
       experience_level: "Mid-Level",
+      saved: false,
+      applied:false,
     },
     {
       id: 2,
@@ -79,6 +81,7 @@ const JobSearch = () => {
       experience_level: "Experienced",
     },
   ];
+  
   const [searchResult, setSearchResult] = useState(data);
   const [savedJobs, setSavedJobs] = useState([]);
   const [jobListings, setJobListings] = useState([]);

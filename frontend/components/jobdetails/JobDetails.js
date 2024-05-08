@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from "react";
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, StyleSheet,Alert } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -8,35 +8,63 @@ import About from './about/About';
 import Company from './company/Company'
 import Contacts from './contacts/Contacts'
 
-import { COLORS, icons, SIZES } from "../../constants";
+import { COLORS, SIZES } from "../../constants";
 
 const tabs = ["About", "Company", "Contacts"];
 
-const JobDetails = ({ jobDetails }) => {
+const JobDetails = ({ job }) => {
   const route = useRoute();
-  const { id, company_name, title, description, website_link, role, salary, hr_email, hr_phone, logo_url, city, country, ...otherJobDetails } = route.params.job;
+  const { id, company_name, title, description, website_link, role, salary, hr_email, hr_phone, logo_url, city, country,saved,applied, ...otherJobDetails } = route.params.job;
   const [activeTab, setActiveTab] = useState("About");
+  const [isSaved, setIsSaved] = useState(saved);
+  const [isApplied, setIsApplied] = useState(applied);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
-
+ 
+  const handleSave = () => {
+    const newSavedState = !isSaved;
+    
+    const updatedJob = { ...job, saved: newSavedState };
+    Alert.alert(
+      `Job ${newSavedState ? 'Saved' : 'Unsaved'}`,
+      `The job has been ${newSavedState ? 'saved' : 'unsaved'} successfully.`
+    );
   
+    setIsSaved(newSavedState);
+    console.log(updatedJob);
+  };
+
+  const handleApply = () => {
+    const newApplyState = !isApplied;
+  
+    if (newApplyState) {
+      Alert.alert("Job Applied", "You have applied for this job.");
+    } else {
+      Alert.alert("Job Unapplied", "You have unapplied for this job.");
+    }
+  
+    setIsApplied(newApplyState);
+  };
+  
+
+  const applyButtonTitle = isApplied ? "Applied" : "Apply";
 
   return (
     <SafeAreaView>
       <ScrollView>
         <View style={styles.headerContainer}>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.applyButton}>
-              <Text style={styles.applyButtonText}>Apply</Text>
+            <TouchableOpacity onPress={handleApply} style={styles.applyButton}>
+            <Text style={styles.applyButtonText}>{applyButtonTitle}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.heartButton}>
-              <Ionicons
-                name={'heart'}
+            <TouchableOpacity onPress={handleSave} style={styles.heartButton}>
+            <Ionicons
+                name={ isSaved ? 'heart' : 'heart-outline'}
                 size={30}
-                color={COLORS.tertiary}
+                color={ isSaved ? COLORS.tertiary : COLORS.gray}
               />
             </TouchableOpacity>
           </View>
