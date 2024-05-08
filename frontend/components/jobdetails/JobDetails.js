@@ -42,7 +42,7 @@ const JobDetails = ({ job }) => {
     if (newApplyState) {
       Alert.alert("Job Applied", "You have applied for this job.");
     } else {
-      Alert.alert("Job Unapplied", "You have unapplied for this job.");
+      Alert.alert("Job Conceal Applied", "You have conceal applied for this job.");
     }
   
     setIsApplied(newApplyState);
@@ -55,27 +55,30 @@ const JobDetails = ({ job }) => {
     <SafeAreaView>
       <ScrollView>
         <View style={styles.headerContainer}>
+          
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={handleApply} style={styles.applyButton}>
-            <Text style={styles.applyButtonText}>{applyButtonTitle}</Text>
-            </TouchableOpacity>
-
+            {/* Heart Button on the Left */}
             <TouchableOpacity onPress={handleSave} style={styles.heartButton}>
-            <Ionicons
-                name={ isSaved ? 'heart' : 'heart-outline'}
+              <Ionicons
+                name={isSaved ? 'heart' : 'heart-outline'}
                 size={30}
-                color={ isSaved ? COLORS.tertiary : COLORS.gray}
+                color={isSaved ? COLORS.tertiary : COLORS.primary}
               />
             </TouchableOpacity>
+  
+            {/* Apply Button on the Right */}
+            <TouchableOpacity onPress={handleApply} style={styles.applyButton}>
+              <Text style={styles.applyButtonText}>{applyButtonTitle}</Text>
+            </TouchableOpacity>
           </View>
-
+  
           {logo_url && (
             <Image
               source={{ uri: logo_url }}
               style={styles.logoImage}
             />
           )}
-
+  
           <View style={styles.companyNameTitleContainer}>
             <Text style={styles.companyNameText}>{company_name}</Text>
             <Text style={styles.titleText}>{title}</Text>
@@ -87,9 +90,9 @@ const JobDetails = ({ job }) => {
             <Text style={styles.locationName}>{`${city}, ${country}`} </Text>
           </View>
         </View>
-
+  
         <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={handleTabChange} />
-
+  
         <View style={{ padding: SIZES.padding }}>
           {activeTab === "About" && (
             <About
@@ -109,58 +112,61 @@ const JobDetails = ({ job }) => {
             />
           )}
         </View>
-
+  
       </ScrollView>
     </SafeAreaView>
   );
-};
-
-export default JobDetails;
-
-const styles = StyleSheet.create({
-  headerContainer: {
-    flexDirection: 'column',
-    padding: SIZES.padding,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  applyButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    backgroundColor: COLORS.primary,
-    borderRadius: 5,
-  },
-  applyButtonText: {
-    color: COLORS.white,
-  },
-  heartButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  logoImage: {
-    width: 80,
-    height: 80,
-    alignSelf: 'center',
-    marginBottom: 10,
-  },
-  companyNameTitleContainer: {
-    alignItems: 'center',
-  },
-  companyNameText: {
-    fontSize: SIZES.large,
-    color: COLORS.black,
-  },
-  titleText: {
-    fontSize: SIZES.medium,
-    color: COLORS.gray,
-  },
-  locationName: {
-    fontSize: SIZES.medium - 2,
-    color: COLORS.gray,
-    fontFamily: "AlNile-Bold",
-    marginLeft: 2,
-  },
-});
+  };
+  
+  export default JobDetails;
+  
+  const styles = StyleSheet.create({
+    headerContainer: {
+      flexDirection: 'column',
+      padding: SIZES.padding,
+    },
+    buttonContainer: {
+      flexDirection: 'row', // Maintains horizontal layout
+      justifyContent: 'flex-end', // Aligns buttons to the right
+      marginBottom: 8,
+    },
+    applyButton: {
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+      backgroundColor: 'transparent', // Remove background color
+      borderWidth: 1,
+      borderColor: COLORS.primary,
+      borderRadius: 5,
+      marginRight: 10, // Add margin right in pixels
+    },
+    applyButtonText: {
+      color: COLORS.primary,
+    },
+    heartButton: {
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+    },
+    logoImage: {
+      width: 80,
+      height: 80,
+      alignSelf: 'center',
+      marginBottom: 10,
+    },
+    companyNameTitleContainer: {
+      alignItems: 'center',
+    },
+    companyNameText: {
+      fontSize: SIZES.large,
+      color: COLORS.black,
+    },
+    titleText: {
+      fontSize: SIZES.medium,
+      color: COLORS.gray,
+    },
+    locationName: {
+      fontSize: SIZES.medium - 2,
+      color: COLORS.gray,
+      fontFamily: "AlNile-Bold",
+      marginLeft: 2,
+    },
+  });

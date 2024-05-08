@@ -6,11 +6,18 @@ import { COLORS, images, SIZES, FONT } from "../../constants";
 import Welcome from "./welcome/Welcome";
 import { StyleSheet } from "react-native";
 import JobSearch from "../Jobs/JobSeach";
+import Tabs from "../jobdetails/tabs/Tabs";
 
+const jobFilter = ["For you", "Latest", "Nearby"];
 
 const Home = ({ navigation }) => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState("For you");
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
 
   return (
     <ImageBackground
@@ -29,8 +36,20 @@ const Home = ({ navigation }) => {
               }
             }}
           />
+          <Tabs tabs={jobFilter} activeTab={activeTab} setActiveTab={handleTabChange} />
 
-          <JobSearch/>
+          <View style={{ padding: SIZES.padding }}>
+            {activeTab === "For you" && (
+              <JobSearch />
+            )}
+            {activeTab === "Latest" && (
+              <JobSearch />
+            )}
+            {activeTab === "Nearby" && (
+              <JobSearch />
+            )}
+          </View>
+
         </View>
       </ScrollView>
     </ImageBackground>
@@ -40,19 +59,19 @@ const Home = ({ navigation }) => {
 const styles = StyleSheet.create({
   header: {
     backgroundColor: COLORS.primary,
-    flexDirection:"row",
-    padding:10,
-    paddingTop:30,
-    justifyContent:"space-between",
-    alignItems:"center"
+    flexDirection: "row",
+    padding: 10,
+    paddingTop: 30,
+    justifyContent: "space-between",
+    alignItems: "center"
   },
-  title:{
+  title: {
     fontFamily: "AlNile-Bold",
     fontSize: SIZES.large,
     color: "#F1F0EC",
     marginTop: 2,
   }
-  
+
 });
 
 export default Home;

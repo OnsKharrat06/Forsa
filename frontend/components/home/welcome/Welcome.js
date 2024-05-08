@@ -38,10 +38,6 @@ const Welcome = () => {
         resizeMode="stretch"
         style={{ flex: 1 }}
       >
-        <View style={styles.container}>
-          <Text style={styles.userName}>Hello, {user?.fname}</Text>
-          <Text style={styles.welcomeMessage}>Find your perfect job</Text>
-        </View>
 
         <View style={styles.searchContainer}>
           <View style={styles.searchWrapper}>
@@ -49,7 +45,7 @@ const Welcome = () => {
               style={styles.searchInput}
               selectionColor={COLORS.primary}
               onFocus={toggleModal} // Show modal on focus
-              placeholder="What are you looking for?"
+              placeholder="Search for a job"
             />
           </View>
 
@@ -97,7 +93,7 @@ const Welcome = () => {
                   selectionColor={COLORS.primary}
                   value={searchTerm}
                   onChangeText={(text) => setSearchTerm(text)}
-                  placeholder="What are you looking for?"
+                  placeholder="Search for a job"
                   placeholderTextColor="gray"
                 />
               </View>
