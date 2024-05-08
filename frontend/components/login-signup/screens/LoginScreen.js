@@ -21,7 +21,7 @@ export default function LoginScreen({ navigation }) {
   const [error,setError]=useState();
   const {setUser} = useContext(userContext);
 
-  const url="http://192.168.102.43:8000/login"
+  const url="http://192.168.1.21:8000/login"
 
   const onLoginPressed = async () => {
     const emailValue = email.value; 
