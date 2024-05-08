@@ -125,7 +125,7 @@ export default function RegisterScreen({ navigation }) {
   const [selectedIndustry, setSelectedIndustry] = useState([]);
   const {setUser} = useContext(userContext);
 
-  const url = "http://192.168.146.43:8000/users";
+  const url = "http://192.168.1.21:8000/users";
 
   const onSignUpPressed = async () => {
     const fnameError = nameValidator(fname.value);
