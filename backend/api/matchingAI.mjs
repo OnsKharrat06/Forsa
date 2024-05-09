@@ -1,40 +1,78 @@
 import dotenv from "dotenv";
 dotenv.config();
-import readline from "readline";
+import mysql from 'mysql2';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-});
 
-async function run() {
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+// Database connection configuration
+const pool = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: 'adminadmin',
+    database: 'fursadashs1',
+}).promise()
 
-    const chat = model.startChat({
-        history: [], // Start with an empty history
-        generationConfig: {
-            maxOutputTokens: 500,
-        },
-    });
-
-    async function askAndRespond() {
-        rl.question("You: ", async (msg) => {
-            if (msg.toLowerCase() === "exit") {
-                rl.close();
-            } else {
-                const result = await chat.sendMessage(msg);
-                const response = await result.response;
-                const text = await response.text();
-                console.log("AI: ", text);
-                askAndRespond();
-            }
-        });
+// Function to load job listings from the database
+async function loadJobListingsFromDatabase() {
+    const connection = await pool.getConnection();
+    try {
+      const [rows] = await connection.query('SELECT * FROM joblisting');
+      return rows;
+    } finally {
+      connection.release();
     }
-
-    askAndRespond(); // Start the conversation loop
+  }
+// Function to format job listings for chat history
+function formatJobListing(job) {
+  return `**Job Title:** ${job.title}
+**Company:** ${job.companyid}
+**Location:** ${job.city}, ${job.country}
+**Type:** ${job.type}
+**Experience Level:** ${job.experience_level}
+**Description:** ${job.description}`;
 }
 
-run();
+async function matchJobs(seekerInfo) {
+  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+  // Load job listings from your database
+  const jobListings = await loadJobListingsFromDatabase(); // Replace with your database logic
+
+  // Format job listings for chat history
+  const formattedJobListings = jobListings.map(formatJobListing);
+
+  // Create chat history with job listings and seeker information
+  const history = [
+    ...formattedJobListings,
+    `**Job Seeker Information:** ${seekerInfo}`,
+  ];
+
+  const chat = model.startChat({
+    history,
+    generationConfig: {
+      maxOutputTokens: 500,
+    },
+  });
+
+  // Prompt the model to find best match jobs
+  const result = await chat.sendMessage("Based on the job seeker information and available job listings, please provide the best matching job offers in JSON format.");
+  const response = await result.response;
+  const text = await response.text();
+
+  // Parse JSON response 
+  try {
+    const jobMatches = JSON.parse(text);
+    return jobMatches;
+  } catch (error) {
+    console.error("Error parsing JSON response:", error);
+    return []; // Return an empty array on error
+  }
+}
+
+// Example usage
+const seekerInfo = "Experienced software developer with 5+ years of experience in Java and Python. Looking for a full-time remote position.";
+matchJobs(seekerInfo).then((matches) => {
+  console.log("Matching Jobs:", matches);
+});
