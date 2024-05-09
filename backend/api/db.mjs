@@ -4,7 +4,7 @@ import mysql from 'mysql2';
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: 'MindYourBusiness',
+    password: 'root',
     database: 'fursadashs1',
 }).promise()
 
@@ -13,7 +13,6 @@ export async function postUser(fname, lname, age, phone, email, password, city, 
   try {
     const [result] = await pool.query("INSERT INTO users (fname, lname, age, phone, email, password, city) VALUES (?, ?, ?, ?, ?, ?, ?)", [fname, lname, age, phone, email, password, city]);
     console.log("User added successfully:", result);
-
     // Add industries for the user
     if (industries && industries.length > 0) {
       for (const industry of industries) {
@@ -777,5 +776,36 @@ export async function deleteEducation(education_id) {
   } catch (error) {
     console.error("Error deleting education", error);
     throw error;
+  }
+}
+
+// filtering by latest 
+
+export async function getLatestJobs(){
+  try {
+    const [rows] = await pool.query('SELECT * FROM joblisting ORDER BY created_at DESC LIMIT 3');
+    return rows;
+  } catch (error) {
+    console.error("Error deleting latest jobs", error);
+  }
+}
+
+// filter by city
+
+export async function getJobsbyCity(city){
+  try {
+    const [result] = await pool.query('SELECT * FROM joblisting WHERE city = ?', [city]);
+    return result;
+  } catch (error) {
+    console.error("Error getting nearest jobs", error);
+  }
+}
+
+export async function getJobsbyIndustry(industry){
+  try {
+    const [result] = await pool.query('SELECT j.* FROM joblisting j JOIN company c ON j.companyid = c.companyid WHERE c.industry = ?', [industry]);
+    return result;
+  } catch (error) {
+    console.error("Error getting nearest jobs", error);
   }
 }

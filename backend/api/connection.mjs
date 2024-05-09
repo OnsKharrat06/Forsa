@@ -11,7 +11,7 @@ import { getCVsByUserId } from './db.mjs';
 import { getAppliedJobListings } from './db.mjs';
 import { applyToJob } from './db.mjs';
 import { savedJob } from './db.mjs';
-import { getSavedJobListings } from './db.mjs';
+import { getSavedJobListings, getLatestJobs, getJobsbyCity, getJobsbyIndustry} from './db.mjs';
 
 
 import { getAppliedStatus } from './db.mjs';
@@ -749,6 +749,42 @@ app.get('/user', isAuth,async (req, res) =>{
     user
   });
 });
+
+// filtering by latest 
+
+app.get('/joblisting/latest', async (req, res) => {
+  try {
+    const latestJobs = await getLatestJobs();
+    res.status(200).json(latestJobs);
+  } catch (error) {
+    console.error("Error fetching job listings:", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+app.get('/joblisting/nearest', async (req, res) => {
+   const { city } = req.body;
+    try {
+    const latestJobs = await getJobsbyCity(city);
+    res.status(200).json(latestJobs);
+  } catch (error) {
+    console.error("Error fetching job listings:", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/joblisting/industry', async (req, res) => {
+  const { industry } = req.body;
+   try {
+   const industryJobs = await getJobsbyIndustry(industry);
+   res.status(200).json(industryJobs);
+ } catch (error) {
+   console.error("Error fetching job listings:", error);
+   res.status(500).json({ error: 'Internal Server Error' });
+ }
+});
+
 
 
 // Start the server
