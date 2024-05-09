@@ -388,7 +388,7 @@ export async function deleteUserLanguage(user_language_id) {
 export async function getAllJobListings() {
   try {
     const [rows] = await pool.query(`
-      SELECT joblisting.*, company.*
+      SELECT joblisting.*, company.*, joblisting.description AS job_description
       FROM joblisting
       INNER JOIN company ON joblisting.companyid = company.companyid
     `);
@@ -398,7 +398,8 @@ export async function getAllJobListings() {
       id: row.jobid,
       company_name: row.company_name,
       industry: row.industry,
-      description: row.description,
+      company_description: row.description, // Description from the company table
+      job_description: row.job_description, // Description from the joblisting table
       city: row.city,
       country: row.country,
       remote: row.remote,
@@ -420,11 +421,12 @@ export async function getAllJobListings() {
     throw error;
   }
 }
+
 //applied joblistings 
 export async function getAppliedJobListings() {
   try {
     const [rows] = await pool.query(`
-      SELECT joblisting.*, company.*
+      SELECT joblisting.*, company.*, joblisting.description AS job_description
       FROM joblisting
       INNER JOIN company ON joblisting.companyid = company.companyid
       WHERE joblisting.applied = true
@@ -435,7 +437,8 @@ export async function getAppliedJobListings() {
       id: row.jobid,
       company_name: row.company_name,
       industry: row.industry,
-      description: row.description,
+      company_description: row.description, // Description from the company table
+      job_description: row.job_description, // Description from the joblisting table
       city: row.city,
       country: row.country,
       remote: row.remote,
@@ -539,7 +542,7 @@ export async function applyToJob(jobId) {
 export async function getSavedJobListings() {
   try {
     const [rows] = await pool.query(`
-      SELECT joblisting.*, company.*
+      SELECT joblisting.*, company.*, joblisting.description AS job_description
       FROM joblisting
       INNER JOIN company ON joblisting.companyid = company.companyid
       WHERE joblisting.saved = true
@@ -550,7 +553,8 @@ export async function getSavedJobListings() {
       id: row.jobid,
       company_name: row.company_name,
       industry: row.industry,
-      description: row.description,
+      company_description: row.description, // Description from the company table
+      job_description: row.job_description, // Description from the joblisting table
       city: row.city,
       country: row.country,
       remote: row.remote,

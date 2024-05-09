@@ -27,7 +27,7 @@ const JobCard = ({ job, saveJob ,saved }) => {
     );
   };
 
-  const saveButtonTitle = saved ? "Unsave" : "Save";
+  //const saveButtonTitle = saved ? "Unsave" : "Save";
 
   return (
     <TouchableOpacity>
@@ -36,8 +36,8 @@ const JobCard = ({ job, saveJob ,saved }) => {
         <CardTitle title={job.title} subtitle={job.type} />
         <CardContent text={job.description} />
         <CardAction separator={true} inColumn={false}>
-          <CardButton onPress={handleSave} title={saveButtonTitle} color="#2F704D" />
-          <CardButton onPress={navigate} title="Explore" color="#2F704D" />
+        
+        <CardButton onPress={navigate} title="Explore" color="#2F704D" />
         </CardAction>
       </Card>
     </TouchableOpacity>
