@@ -41,7 +41,7 @@ const Save = () => {
     React.useCallback(() => {
     const fetchSavedJobs = async () => {
       try {
-        const response = await axios.get("http://192.168.1.21:8000/joblistings/saved");
+        const response = await axios.get("http://192.168.18.70:8000/joblistings/saved");
         setSavedJobs(response.data);
       } catch (error) {
         console.error('Error fetching saved jobs:', error);
