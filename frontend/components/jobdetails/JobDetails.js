@@ -15,7 +15,7 @@ const tabs = ["About", "Company", "Contacts"];
 
 const JobDetails = ({ job }) => {
   const route = useRoute();
-  const { id, company_name, title, description, website_link, role, salary, hr_email, hr_phone, logo_url, city, country, saved, ...otherJobDetails } = route.params.job;
+  const { id, company_name, title, description, website_link, role, salary, hr_email, hr_phone, logo_url, city, country, saved,job_description,company_description, ...otherJobDetails } = route.params.job;
   const [activeTab, setActiveTab] = useState("About");
   const [isSaved, setIsSaved] = useState(saved);
   const [isApplied, setIsApplied] = useState(false);
@@ -24,7 +24,7 @@ const JobDetails = ({ job }) => {
     // Fetch applied status when component mounts
     const fetchAppliedStatus = async () => {
       try {
-        const response = await axios.get(`http://192.168.1.21:8000/joblistings/${id}/appliedStatus`);
+        const response = await axios.get(`http://192.168.18.70:8000/joblistings/${id}/appliedStatus`);
         setIsApplied(response.data.applied === 1); // Update isApplied based on the fetched status
       } catch (error) {
         console.error('Error fetching applied status:', error);
@@ -32,7 +32,7 @@ const JobDetails = ({ job }) => {
     };
     const fetchSavedStatus = async () => {
       try {
-        const savedResponse = await axios.get(`http://192.168.1.21:8000/joblistings/${id}/savedStatus`);
+        const savedResponse = await axios.get(`http://192.168.18.70:8000/joblistings/${id}/savedStatus`);
         setIsSaved(savedResponse.data.saved === 1);
       } catch (error) {
         console.error('Error fetching saved status:', error);
@@ -48,7 +48,7 @@ const JobDetails = ({ job }) => {
 
   const handleSave = async () => {
     try {
-      const response = await axios.put(`http://192.168.1.21:8000/joblistings/${id}/save`);
+      const response = await axios.put(`http://192.168.18.70:8000/joblistings/${id}/save`);
       console.log(response.data.message);
       setIsSaved(prevState => !prevState); // Toggle isApplied state
       Alert.alert("Job Saved", isSaved ? "You have saved this job." : "You have unsaved this job.");
@@ -60,7 +60,7 @@ const JobDetails = ({ job }) => {
 
   const handleApply = async () => {
     try {
-      const response = await axios.put(`http://192.168.1.21:8000/joblistings/${id}/apply`);
+      const response = await axios.put(`http://192.168.18.70:8000/joblistings/${id}/apply`);
       console.log(response.data.message);
       setIsApplied(prevState => !prevState); // Toggle isApplied state
       Alert.alert("Job Applied", isApplied ? "You have applied for this job." : "You have unapplied for this job.");
@@ -114,13 +114,13 @@ const JobDetails = ({ job }) => {
         <View style={{ padding: SIZES.padding }}>
           {activeTab === "About" && (
             <About
-              info={description}
+              info={job_description}
             />
           )}
           {activeTab === "Company" && (
             <Company
-              jobTitle={title}
-              companyName={company_name}
+              jobTitle={company_name}
+              companyName={company_description}
             />
           )}
           {activeTab === "Contacts" && (
