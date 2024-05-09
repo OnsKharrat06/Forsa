@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, StyleSheet, Alert } from "react-native";
+import React, { useState, useEffect, useMemo } from "react";
+import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, StyleSheet, Alert, Animated, useWindowDimensions } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import axios from "axios";
@@ -13,18 +13,17 @@ import { COLORS, SIZES } from "../../constants";
 
 const tabs = ["About", "Company", "Contacts"];
 
-const JobDetails = ({ job }) => {
+const JobDetails = ({ job, navigation }) => {
   const route = useRoute();
-  const { id, company_name, title, description,industry, remote, website_link,application_deadline,type,experience_level, role, salary, hr_email, hr_phone, logo_url, city, country, saved,job_description,company_description, ...otherJobDetails } = route.params.job;
+  const { id, company_name, title, description, website_link, role, salary, hr_email, hr_phone, logo_url, city, country, saved, ...otherJobDetails } = route.params.job;
   const [activeTab, setActiveTab] = useState("About");
   const [isSaved, setIsSaved] = useState(saved);
   const [isApplied, setIsApplied] = useState(false);
-
   useEffect(() => {
     // Fetch applied status when component mounts
     const fetchAppliedStatus = async () => {
       try {
-        const response = await axios.get(`http://192.168.18.70:8000/joblistings/${id}/appliedStatus`);
+        const response = await axios.get(`http://192.168.1.21:8000/joblistings/${id}/appliedStatus`);
         setIsApplied(response.data.applied === 1); // Update isApplied based on the fetched status
       } catch (error) {
         console.error('Error fetching applied status:', error);
@@ -32,7 +31,7 @@ const JobDetails = ({ job }) => {
     };
     const fetchSavedStatus = async () => {
       try {
-        const savedResponse = await axios.get(`http://192.168.18.70:8000/joblistings/${id}/savedStatus`);
+        const savedResponse = await axios.get(`http://192.168.1.21:8000/joblistings/${id}/savedStatus`);
         setIsSaved(savedResponse.data.saved === 1);
       } catch (error) {
         console.error('Error fetching saved status:', error);
@@ -48,10 +47,10 @@ const JobDetails = ({ job }) => {
 
   const handleSave = async () => {
     try {
-      const response = await axios.put(`http://192.168.18.70:8000/joblistings/${id}/save`);
+      const response = await axios.put(`http://192.168.1.21:8000/joblistings/${id}/save`);
       console.log(response.data.message);
       setIsSaved(prevState => !prevState); // Toggle isApplied state
-      Alert.alert("Job Saved", isSaved ? "You have unsaved this job." : "You have saved this job.");
+      Alert.alert("Job Saved", isSaved ? "You have saved this job." : "You have unsaved this job.");
     } catch (error) {
       console.error("Error applying to job:", error);
       Alert.alert("Error", "Failed to apply for this job. Please try again later.");
@@ -60,10 +59,10 @@ const JobDetails = ({ job }) => {
 
   const handleApply = async () => {
     try {
-      const response = await axios.put(`http://192.168.18.70:8000/joblistings/${id}/apply`);
+      const response = await axios.put(`http://192.168.1.21:8000/joblistings/${id}/apply`);
       console.log(response.data.message);
       setIsApplied(prevState => !prevState); // Toggle isApplied state
-      Alert.alert("Job Applied", isApplied ? "You have unapplied for this job." : "You have applied for this job.");
+      Alert.alert("Job Applied", isApplied ? "You have applied for this job." : "You have unapplied for this job.");
     } catch (error) {
       console.error("Error applying to job:", error);
       Alert.alert("Error", "Failed to apply for this job. Please try again later.");
@@ -72,13 +71,39 @@ const JobDetails = ({ job }) => {
 
   const applyButtonTitle = isApplied ? "Applied" : "Apply";
 
+  const { height: windowHeight } = useWindowDimensions();
+  const scrollY = useMemo(() => new Animated.Value(0), []);
+
+  const headerTranslateY = scrollY.interpolate({
+    inputRange: [-250, 0, 250], // Adjust as needed
+    outputRange: [-125, 0, 187.5], // Adjust as needed
+  });
+
+  const headerScale = scrollY.interpolate({
+    inputRange: [-250, 0, 250], // Adjust as needed
+    outputRange: [2, 1, 1],
+  });
+
+  const headerStyle = {
+    transform: [{ translateY: headerTranslateY }, { scale: headerScale }],
+  };
   return (
     <SafeAreaView>
-      <ScrollView>
-        <View style={styles.headerContainer}>
+      <Animated.ScrollView
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={16}
+      >
+        <Animated.View style={[styles.headerContainer, headerStyle]}>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={handleApply} style={styles.applyButton}>
-              <Text style={styles.applyButtonText}>{applyButtonTitle}</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+              <Ionicons
+                name="arrow-back"
+                size={30}
+                color={COLORS.tertiary}
+              />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleSave} style={styles.heartButton}>
               <Ionicons
@@ -86,6 +111,9 @@ const JobDetails = ({ job }) => {
                 size={30}
                 color={isSaved ? COLORS.tertiary : COLORS.gray}
               />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleApply} style={styles.applyButton}>
+              <Text style={styles.applyButtonText}>{applyButtonTitle}</Text>
             </TouchableOpacity>
           </View>
 
@@ -99,48 +127,45 @@ const JobDetails = ({ job }) => {
           <View style={styles.companyNameTitleContainer}>
             <Text style={styles.companyNameText}>{company_name}</Text>
             <Text style={styles.titleText}>{title}</Text>
-            <Ionicons
-              name="location-sharp"
-              size={20}
-              color={COLORS.tertiary}
-            />
-            <Text style={styles.locationName}>{`${city}, ${country}`} </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Ionicons
+                name="location-sharp"
+                size={20}
+                color={COLORS.tertiary}
+                style={{ marginRight: 5 }} // Add some margin between icon and text
+              />
+              <Text style={styles.locationName}>{`${city}, ${country}`}</Text>
+            </View>
           </View>
+        </Animated.View>
+
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Tabs
+            tabs={tabs}
+            activeTab={activeTab}
+            setActiveTab={handleTabChange}
+          />
         </View>
-
-        <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={handleTabChange} />
-
         <View style={{ padding: SIZES.padding }}>
           {activeTab === "About" && (
             <About
-              info={job_description}
-              role={role}
-              type={type}
-              salary={salary}
-              application_deadline={application_deadline}
-              experience_level={experience_level}
+              info={description}
             />
           )}
           {activeTab === "Company" && (
             <Company
-              jobTitle={company_name}
-              companyName={company_description}
-              industry={industry}
-              city={city}
-              remote={remote}
+              jobTitle={title}
+              companyName={company_name}
             />
           )}
           {activeTab === "Contacts" && (
             <Contacts
               hr_email={hr_email}
               hr_phone={hr_phone}
-              website_link={website_link}
-              
             />
           )}
         </View>
-
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 };
@@ -149,32 +174,38 @@ export default JobDetails;
 
 const styles = StyleSheet.create({
   headerContainer: {
+    marginTop: 50,
     flexDirection: 'column',
     padding: SIZES.padding,
+    overflow: 'hidden',
+
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'row', // Maintains horizontal layout
+    justifyContent: 'space-between', // Aligns buttons to the right
     marginBottom: 10,
   },
   applyButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    backgroundColor: COLORS.primary,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: 'transparent', // Remove background color
+    borderWidth: 1,
+    borderColor: COLORS.primary,
     borderRadius: 5,
+    marginRight: 10, // Add margin right in pixels
   },
   applyButtonText: {
-    color: COLORS.white,
+    color: COLORS.primary,
   },
   heartButton: {
     paddingHorizontal: 10,
     paddingVertical: 5,
+    marginLeft: 250,
   },
   logoImage: {
-    width: 80,
-    height: 80,
-    alignSelf: 'center',
-    marginBottom: 10,
+    flex: 1,
+    height: 250, // Adjust height as needed
+    resizeMode: 'cover', // or 'contain' depending on desired scaling
   },
   companyNameTitleContainer: {
     alignItems: 'center',
