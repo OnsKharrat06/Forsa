@@ -15,7 +15,7 @@ const tabs = ["About", "Company", "Contacts"];
 
 const JobDetails = ({ job, navigation }) => {
   const route = useRoute();
-  const { id, company_name, title, description, website_link, role, salary, hr_email, hr_phone, logo_url, city, country, saved, ...otherJobDetails } = route.params.job;
+  const { id, company_name, title, description,industry, remote, website_link,application_deadline,type,experience_level, role, salary, hr_email, hr_phone, logo_url, city, country, saved,job_description,company_description, ...otherJobDetails } = route.params.job; 
   const [activeTab, setActiveTab] = useState("About");
   const [isSaved, setIsSaved] = useState(saved);
   const [isApplied, setIsApplied] = useState(false);
@@ -50,7 +50,7 @@ const JobDetails = ({ job, navigation }) => {
       const response = await axios.put(`http://192.168.1.21:8000/joblistings/${id}/save`);
       console.log(response.data.message);
       setIsSaved(prevState => !prevState); // Toggle isApplied state
-      Alert.alert("Job Saved", isSaved ? "You have saved this job." : "You have unsaved this job.");
+      Alert.alert("Job Saved", isSaved ? "You have unsaved this job." : "You have saved this job.");
     } catch (error) {
       console.error("Error applying to job:", error);
       Alert.alert("Error", "Failed to apply for this job. Please try again later.");
@@ -62,7 +62,7 @@ const JobDetails = ({ job, navigation }) => {
       const response = await axios.put(`http://192.168.1.21:8000/joblistings/${id}/apply`);
       console.log(response.data.message);
       setIsApplied(prevState => !prevState); // Toggle isApplied state
-      Alert.alert("Job Applied", isApplied ? "You have applied for this job." : "You have unapplied for this job.");
+      Alert.alert("Job Applied", isApplied ? "You have Unapplied for this job." : "You have applied for this job.");
     } catch (error) {
       console.error("Error applying to job:", error);
       Alert.alert("Error", "Failed to apply for this job. Please try again later.");
@@ -150,19 +150,30 @@ const JobDetails = ({ job, navigation }) => {
         <View style={{ padding: SIZES.padding }}>
           {activeTab === "About" && (
             <About
-              info={description}
+            info={job_description}
+            role={role}
+            type={type}
+            salary={salary}
+            application_deadline={application_deadline}
+            experience_level={experience_level}
             />
           )}
           {activeTab === "Company" && (
             <Company
-              jobTitle={title}
-              companyName={company_name}
+            
+            
+            jobTitle={company_name}
+            companyName={company_description}
+            industry={industry}
+            city={city}
+            remote={remote}
             />
           )}
           {activeTab === "Contacts" && (
             <Contacts
               hr_email={hr_email}
               hr_phone={hr_phone}
+              website_link={website_link}
             />
           )}
         </View>

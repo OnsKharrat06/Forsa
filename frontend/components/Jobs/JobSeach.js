@@ -11,7 +11,7 @@ const JobSearch = () => {
     // Define a function to fetch job listings
     const fetchJobListings = async () => {
       try {
-        const response = await axios.get("http://192.168.18.70:8000/joblistings");
+        const response = await axios.get("http://192.168.1.21:8000/joblistings");
         // Assuming your backend returns job listings in response.data
         setJobListings(response.data);
       } catch (error) {

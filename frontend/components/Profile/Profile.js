@@ -130,7 +130,7 @@ const ProfileScreen = () => {
 
   const getUserBio = async () => {
     try {
-      const response = await axios.get(`http://192.168.18.70:8000/users/bio/4`);
+      const response = await axios.get(`http://192.168.1.21:8000/users/bio/4`);
       const { bio } = response.data;
       setBio(bio);
       setLoadingBio(false);
@@ -141,7 +141,7 @@ const ProfileScreen = () => {
   const getUserContactInfo = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.18.70:8000/users/contactinfo/5`
+        `http://192.168.1.21:8000/users/contactinfo/5`
       );
       const { linkedinurl, phone, email } = response.data;
       setEmail(email);
@@ -156,7 +156,7 @@ const ProfileScreen = () => {
     try {
       const {
         data: { skills },
-      } = await axios.get("http://192.168.18.70:8000/user_skills/"+user?.userid);
+      } = await axios.get("http://192.168.1.21:8000/user_skills/"+user?.userid);
       console.log(skills);
       const allSkills = skills.map(
         ({ skill, skill_type, user_skill_id, ...rest }) => ({
@@ -176,7 +176,7 @@ const ProfileScreen = () => {
     try {
       const {
         data: { languages },
-      } = await axios.get("http://192.168.18.70:8000/user_languages/"+user?.userid);
+      } = await axios.get("http://192.168.1.21:8000/user_languages/"+user?.userid);
       console.log(languages);
       const allLanguages = languages.map(
         ({ language, proficiency, user_language_id, ...rest }) => ({
@@ -195,7 +195,7 @@ const ProfileScreen = () => {
     try {
       const {
         data: { educations },
-      } = await axios.get("http://192.168.18.70:8000/education/"+user?.userid);
+      } = await axios.get("http://192.168.1.21:8000/education/"+user?.userid);
       console.log(educations);
       const allEducations = educations.map(
         ({
@@ -226,7 +226,7 @@ const ProfileScreen = () => {
     try {
       const {
         data: { workExperience },
-      } = await axios.get("http://192.168.18.70:8000/user_work_experience/4");
+      } = await axios.get("http://192.168.1.21:8000/user_work_experience/4");
       console.log(workExperience);
       const allWorkExperiences = workExperience.map(
         ({
@@ -260,7 +260,7 @@ const ProfileScreen = () => {
 
   const handleSaveContactInfo = async () => {
     try {
-      const response = await axios.put(`192.168.18.70:8000/users/5`, {
+      const response = await axios.put(`192.168.1.21:8000/users/5`, {
         email,
         phone,
         linkedinurl,
@@ -281,7 +281,7 @@ const ProfileScreen = () => {
 
   const handleSaveBio = async () => {
     try {
-      const response = await axios.put(`http://192.168.18.70:8000/users/4`, {
+      const response = await axios.put(`http://192.168.1.21:8000/users/4`, {
         bio,
       });
       console.log(response.data); // Log the response from the server
@@ -312,7 +312,7 @@ const ProfileScreen = () => {
     }
 
     try {
-      await axios.post("http://192.168.18.70:8000/education/9", {
+      await axios.post("http://192.168.1.21:8000/education/9", {
         school_name: schoolName,
         degree,
         field_of_study: fieldOfStudies,
@@ -339,7 +339,7 @@ const ProfileScreen = () => {
       return;
     }
     try {
-      await axios.post("http://192.168.18.70:8000/user_work_experience/4", {
+      await axios.post("http://192.168.1.21:8000/user_work_experience/4", {
         job_title: jobTitle,
         companyname: companyName,
         location,
@@ -364,7 +364,7 @@ const ProfileScreen = () => {
 
   const handleDeleteEducation = async (educationID) => {
     try {
-      await axios.delete(`http://192.168.18.70:8000/education/${educationID}`);
+      await axios.delete(`http://192.168.1.21:8000/education/${educationID}`);
       await getAllEducations();
     } catch (error) {}
   };
@@ -377,7 +377,7 @@ const ProfileScreen = () => {
   const handleDeleteWorkExperience = async (workExperienceID) => {
     try {
       await axios.delete(
-        `http://192.168.18.70:8000/user_work_experience/${workExperienceID}`
+        `http://192.168.1.21:8000/user_work_experience/${workExperienceID}`
       );
       await getAllWorkExperience();
     } catch (error) {}
@@ -394,7 +394,7 @@ const ProfileScreen = () => {
     }
 
     try {
-      await axios.post("http://192.168.18.70:8000/user_skills/"+user?.userid, {
+      await axios.post("http://192.168.1.21:8000/user_skills/"+user?.userid, {
         skills: hardselectedSkills.map((elm) => ({
           skill: elm,
           skill_type: "hard",
@@ -418,7 +418,7 @@ const ProfileScreen = () => {
     }
 
     try {
-      await axios.post("http://192.168.18.70:8000/user_skills/"+user?.userid, {
+      await axios.post("http://192.168.1.21:8000/user_skills/"+user?.userid, {
         skills: softselectedSkills.map((elm) => ({
           skill: elm,
           skill_type: "soft",
@@ -437,7 +437,7 @@ const ProfileScreen = () => {
 
   const handleDeleteSkill = async (skillID) => {
     try {
-      await axios.delete(`http://192.168.18.70:8000/user_skills/${skillID}`);
+      await axios.delete(`http://192.168.1.21:8000/user_skills/${skillID}`);
       await getAllSkills();
     } catch (error) {}
   };
@@ -469,7 +469,7 @@ const ProfileScreen = () => {
     };
 
     try {
-      await axios.post("http://192.168.18.70:8000/user_languages/9", {
+      await axios.post("http://192.168.1.21:8000/user_languages/9", {
         language: newLanguage.name,
         proficiency: newLanguage.proficiency,
       });
@@ -487,7 +487,7 @@ const ProfileScreen = () => {
   const handleDeleteLanguage = async (languageID) => {
     try {
       await axios.delete(
-        `http://192.168.18.70:8000/user_languages/${languageID}`
+        `http://192.168.1.21:8000/user_languages/${languageID}`
       );
       await getAllLanguages();
     } catch (error) {}

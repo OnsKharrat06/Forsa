@@ -38,7 +38,7 @@ const Apply = () => {
         React.useCallback(() => {
             const fetchAppliedJobs = async () => {
                 try {
-                    const response = await axios.get('http://192.168.18.70:8000/joblistings/applied');
+                    const response = await axios.get('http://192.168.1.21:8000/joblistings/applied');
                     setAppliedJobs(response.data);
                 } catch (error) {
                     console.error('Error fetching applied jobs:', error);
