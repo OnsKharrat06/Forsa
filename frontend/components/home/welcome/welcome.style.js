@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: SIZES.large,
     height: 50,
+    paddingHorizontal: 10,
   },
   searchWrapper: {
     flex: 1,
@@ -66,9 +67,6 @@ const styles = StyleSheet.create({
   modalContent: {
     flex: 1,
     backgroundColor: COLORS.lightWhite,
-    justifyContent: 'center',
-    padding: 20,
-    alignItems: 'center',
   },
   closeButton: {
     position: 'absolute',
@@ -78,10 +76,37 @@ const styles = StyleSheet.create({
   searchPopUpContainer: {
     flexDirection: "row",
     position: "absolute",
-    top: 80, 
+    top: 80,
     left: 10,
     right: 10,
     height: 50,
+  },
+  filterContainer: {
+    marginTop: 120,
+    flexDirection: "row",
+  },
+  filterItem: {
+    marginRight: 10,
+    marginBottom: 10,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  filterButton: {
+    backgroundColor: COLORS.primary,
+    borderRadius: SIZES.medium,
+    paddingHorizontal: SIZES.large,
+    paddingVertical: SIZES.small,
+    justifyContent: "center",
+  },
+  filterButtonText: {
+    fontFamily: FONT.primary,
+    fontSize: SIZES.medium,
+    color: COLORS.white,
+  },
+  topContainer: {
+    padding: 20
   },
 });
 

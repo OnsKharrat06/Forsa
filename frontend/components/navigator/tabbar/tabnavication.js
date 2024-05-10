@@ -14,6 +14,8 @@ import Profile from "../../Profile/Profile";
 import Apply from "../../AppliedJob/Apply";
 import Match from "../../AI/AIMatch";
 import MatchesList from "../../AI/Matches";
+import Save from "../../SavedJob/Save";
+
 
 const Tab = createBottomTabNavigator();
 
@@ -58,8 +60,8 @@ export const BottomTabNavigator = ({navigation, route}) => {
         }}
       />
       <Tab.Screen
-        name="Matches"
-        component={MatchesList}
+        name="Saved"
+        component={Save}
         options={{
           headerShown: false,
           tabBarItemStyle: {
@@ -68,7 +70,7 @@ export const BottomTabNavigator = ({navigation, route}) => {
           },
           tabBarIcon: () => (
             <View>
-              <Ionicons name="checkmark-done-circle" size={30} color={COLORS.tertiary} />
+              <Ionicons name="heart" size={30} color={COLORS.tertiary} />
             </View>
           ),
         }}

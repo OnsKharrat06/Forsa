@@ -51,12 +51,7 @@ const CustomDrawerContent = ({ navigation }) => {
                         onPress={() => navigation.navigate('Home')}
                         style={{ marginBottom: 10 }}
                     />
-                    <DrawerItem
-                        drawerIcon={() => <Ionicons name="bookmark-outline" size={24} />}
-                        label="Save"
-                        onPress={() => navigation.navigate('Save')}
-                        style={{ marginBottom: 10 }}
-                    />
+
                 </DrawerContentScrollView>
                 <Button
                     mode="outlined"
@@ -93,14 +88,7 @@ export default function DrawNavigation() {
                     unmountOnBlur: true
                 }}
             />
-            <Drawer.Screen
-                name="Save"
-                component={Save}
-                options={{
-                    title: 'Save',
-                    unmountOnBlur: true
-                }}
-            />
+
         </Drawer.Navigator>
 
     );
