@@ -8,7 +8,7 @@ import { StyleSheet } from "react-native";
 import JobSearch from "../Jobs/JobSeach";
 import Tabs from "../jobdetails/tabs/Tabs";
 
-const jobFilter = ["For you", "Latest", "Nearby"];
+const jobFilter = ["For you", "Latest", "Near by"];
 
 const Home = ({ navigation }) => {
   const router = useRouter();
@@ -45,7 +45,7 @@ const Home = ({ navigation }) => {
             {activeTab === "Latest" && (
               <JobSearch />
             )}
-            {activeTab === "Nearby" && (
+            {activeTab === "Near by" && (
               <JobSearch />
             )}
           </View>

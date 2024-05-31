@@ -6,6 +6,7 @@ frontend/package-lock.json
 frontend/package.json
 backend/api/package.json
 backend/api/package-lock.json
+yarn.lock
 
 # Expo
 .expo/
@@ -27,6 +28,7 @@ web-build/
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+yarn.lock
 
 # macOS
 .DS_Store
